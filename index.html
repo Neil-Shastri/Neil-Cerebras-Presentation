@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Summer Internship Presentation — Neil Shastri</title>
+<style>
+/* ==========================================================================
+   THEME BLOCK — EDIT ONLY THIS TO MATCH THE COMPANY TEMPLATE
+   Three hues, validated all-pairs in BOTH modes (dataviz validate_palette.js):
+     light  #2a78d6 / #eb6834 / #178f6a   ALL CHECKS PASS
+     dark   #3987e5 / #d95926 / #1fa87b   ALL CHECKS PASS
+   --warm is a NEUTRAL GRAY on purpose: red-vs-orange failed the normal-vision
+   floor (dE 7.1) against the brand accent, and gray reads better for "the old
+   way" — inert, not erroneous.
+   ========================================================================== */
+:root[data-theme="light"]{
+  color-scheme: light;
+  --surface-1:#fcfcfb; --surface-2:#f4f3f0; --surface-3:#e9e7e2;
+  --ink-1:#0b0b0b; --ink-2:#52514e; --ink-3:#807e78;
+  --accent:#eb6834; --accent-soft:#fdefe8;
+  --cool:#2a78d6; --warm:#6f6d66; --good:#178f6a;
+  --shadow:0 1px 2px rgba(11,11,11,.06), 0 10px 30px rgba(11,11,11,.07);
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --surface-1:#1a1a19; --surface-2:#242422; --surface-3:#33322f;
+  --ink-1:#ffffff; --ink-2:#c3c2b7; --ink-3:#94938a;
+  --accent:#d95926; --accent-soft:#2b1b13;
+  --cool:#3987e5; --warm:#8f8d84; --good:#1fa87b;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
+}
+/* ========================================================================== */
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--surface-2); color:var(--ink-1);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  font-feature-settings:"kern" 1,"liga" 1,"tnum" 1;
+  -webkit-font-smoothing:antialiased; overflow:hidden;
+}
+.mono,code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+
+/* ---------- stage ---------- */
+#stage{position:fixed;inset:0;display:grid;place-items:center;overflow:hidden}
+#deck{width:1280px;height:720px;position:relative;transform-origin:center center}
+
+/* ---------- slide + transition ---------- */
+.slide{
+  position:absolute;inset:0;background:var(--surface-1);
+  padding:62px 76px 74px;display:flex;flex-direction:column;
+  border-radius:10px;box-shadow:var(--shadow);overflow:hidden;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transform:translateY(12px) scale(.994);
+  transition:opacity .34s cubic-bezier(.22,.61,.36,1),
+             transform .34s cubic-bezier(.22,.61,.36,1),
+             visibility .34s;
+}
+.slide.active{opacity:1;visibility:visible;pointer-events:auto;transform:none}
+.slide.title{padding:0}
+
+/* ---------- element (fragment) reveals ---------- */
+.frag{
+  opacity:0;transform:translateY(12px);
+  transition:opacity .38s cubic-bezier(.22,.61,.36,1), transform .38s cubic-bezier(.22,.61,.36,1);
+}
+.frag.on{opacity:1;transform:none}
+.frag.dim{opacity:.34;transform:none}          /* a past stage, de-emphasised */
+
+/* ---------- type ---------- */
+.eyebrow{
+  font-size:12.5px;font-weight:680;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:10px;
+}
+.eyebrow .num{
+  display:inline-grid;place-items:center;min-width:19px;height:19px;padding:0 6px;
+  background:var(--accent);color:#fff;border-radius:4px;font-size:11px;letter-spacing:.02em;
+}
+h1{font-size:58px;line-height:1.05;letter-spacing:-.022em;font-weight:700}
+h2{font-size:40px;line-height:1.1;letter-spacing:-.019em;font-weight:700}
+h2 .lo{color:var(--ink-2);font-weight:600}
+.content{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:26px}
+.content.top{justify-content:flex-start;padding-top:30px}
+
+/* one-liner under a headline — keep to ONE short line */
+.line{font-size:19px;line-height:1.4;color:var(--ink-2);font-weight:480;max-width:70ch}
+
+/* big statement */
+.big{
+  font-size:31px;line-height:1.24;letter-spacing:-.015em;font-weight:650;
+  color:var(--ink-1);max-width:40ch;
+}
+.big em{font-style:normal;color:var(--accent)}
+.rule{
+  border-left:4px solid var(--accent);padding:10px 0 10px 22px;
+  font-size:22px;line-height:1.32;font-weight:620;letter-spacing:-.012em;max-width:52ch;
+}
+.rule em{font-style:normal;color:var(--accent)}
+
+/* ---------- title slide ---------- */
+.title .wrap{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 84px;position:relative}
+.title .bar{position:absolute;left:0;top:0;bottom:0;width:8px;background:var(--accent)}
+.title .who{margin-top:56px;padding-top:26px;border-top:1px solid var(--surface-3)}
+.title .who b{display:block;font-size:23px;color:var(--ink-1);font-weight:670;letter-spacing:-.01em}
+.title .who span{display:block;font-size:16.5px;color:var(--ink-2);margin-top:5px}
+
+/* ---------- terse lists ---------- */
+ul.k{list-style:none;display:flex;flex-direction:column;gap:13px}
+ul.k>li{position:relative;padding-left:21px;font-size:19px;line-height:1.36;font-weight:500}
+ul.k>li::before{content:"";position:absolute;left:2px;top:.52em;width:7px;height:7px;background:var(--accent);border-radius:2px}
+ul.k.s>li{font-size:16.5px;line-height:1.34;gap:9px}
+ul.k b{font-weight:680}
+
+/* ---------- stat tiles ---------- */
+.stats{display:grid;gap:14px}
+.stats.c6{grid-template-columns:repeat(6,1fr)}
+.stats.c5{grid-template-columns:repeat(5,1fr)}
+.stats.c4{grid-template-columns:repeat(4,1fr)}
+.stats.c3{grid-template-columns:repeat(3,1fr)}
+.tile{
+  background:var(--surface-2);border:1px solid var(--surface-3);border-radius:9px;
+  padding:18px 15px 16px;display:flex;flex-direction:column;gap:6px;border-top:3px solid var(--accent);
+}
+.tile.good{border-top-color:var(--good)} .tile.warm{border-top-color:var(--warm)} .tile.cool{border-top-color:var(--cool)}
+.tile .n{font-size:36px;font-weight:700;letter-spacing:-.026em;line-height:1;font-variant-numeric:tabular-nums}
+.stats.c6 .tile .n{font-size:30px}
+.stats.c5 .tile .n{font-size:33px}
+.tile .l{font-size:13px;line-height:1.32;color:var(--ink-2);font-weight:560}
+
+/* ---------- panels ---------- */
+.panel{background:var(--surface-2);border:1px solid var(--surface-3);border-radius:10px;padding:20px 22px}
+.panel.accent{border-left:4px solid var(--accent);background:var(--accent-soft)}
+.panel.warm{border-left:4px solid var(--warm)}
+.panel.cool{border-left:4px solid var(--cool)}
+.panel.good{border-left:4px solid var(--good)}
+.panel h4{font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);margin-bottom:10px;font-weight:700}
+.panel .p{font-size:16.5px;line-height:1.4;color:var(--ink-1);font-weight:490}
+.cols{display:grid;gap:18px}
+.cols.c2{grid-template-columns:1fr 1fr}
+.cols.c3{grid-template-columns:repeat(3,1fr)}
+.cols.c4{grid-template-columns:repeat(4,1fr)}
+.cols.c2u{grid-template-columns:1.1fr .9fr}
+.cols.c2v{grid-template-columns:.9fr 1.1fr}
+
+/* ---------- before / after ---------- */
+.ba{display:grid;grid-template-columns:1fr 46px 1fr;align-items:stretch}
+.ba .side{border:1px solid var(--surface-3);border-radius:10px;padding:20px 22px;background:var(--surface-2)}
+.ba .side.b{border-top:3px solid var(--warm)}
+.ba .side.a{border-top:3px solid var(--good)}
+.ba .arrow{display:grid;place-items:center;color:var(--ink-3);font-size:24px}
+.ba h5{font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:13px;font-weight:700}
+.ba .side.b h5{color:var(--warm)} .ba .side.a h5{color:var(--good)}
+.ba ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.ba li{font-size:17px;line-height:1.34;padding-left:17px;position:relative;font-weight:500}
+.ba li::before{content:"";position:absolute;left:0;top:.5em;width:7px;height:7px;border-radius:2px}
+.ba .side.b li::before{background:var(--warm)}
+.ba .side.a li::before{background:var(--good)}
+
+/* ---------- 3-stage progression ---------- */
+.prog{display:grid;grid-template-columns:1fr 36px 1fr 36px 1fr;align-items:stretch}
+.prog .step{border:1px solid var(--surface-3);border-radius:10px;padding:19px 18px;background:var(--surface-2);display:flex;flex-direction:column}
+.prog .step.s1{border-top:3px solid var(--warm)}
+.prog .step.s2{border-top:3px solid var(--accent)}
+.prog .step.s3{border-top:3px solid var(--good)}
+.prog .tag{font-size:11px;letter-spacing:.09em;text-transform:uppercase;font-weight:700;margin-bottom:9px;color:var(--ink-3)}
+.prog h5{font-size:20px;line-height:1.18;margin-bottom:10px;font-weight:680;letter-spacing:-.012em}
+.prog p{font-size:15px;line-height:1.38;color:var(--ink-2)}
+.prog .mark{margin-top:auto;padding-top:13px;font-size:13px;font-weight:640}
+.prog .s1 .mark{color:var(--ink-3)} .prog .s2 .mark{color:var(--accent)} .prog .s3 .mark{color:var(--good)}
+.prog .to{display:grid;place-items:center;color:var(--ink-3);font-size:21px}
+
+/* ---------- diagram ---------- */
+.arch{display:flex;flex-direction:column;gap:12px}
+.arch .lane{display:grid;grid-template-columns:104px 1fr;gap:16px;align-items:center}
+.arch .lbl{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:700;text-align:right}
+.arch .row{display:flex;gap:10px;flex-wrap:wrap}
+.arch .down{grid-column:2;color:var(--ink-3);font-size:14px;padding-left:4px}
+.node{background:var(--surface-2);border:1px solid var(--surface-3);border-radius:8px;padding:10px 14px}
+.node b{display:block;font-size:14.5px;font-weight:670;line-height:1.2}
+.node span{display:block;font-size:11.5px;color:var(--ink-3);margin-top:3px;font-family:ui-monospace,Menlo,monospace}
+.node.hi{border-color:var(--accent);border-width:1.5px;background:var(--accent-soft)}
+.node.cool{border-left:3px solid var(--cool)}
+.node.good{border-left:3px solid var(--good)}
+
+/* code-ish block */
+.schema{display:flex;flex-direction:column;gap:7px}
+.schema span{
+  font-size:14px;padding:8px 11px;border-radius:6px;background:var(--surface-1);
+  border:1px solid var(--surface-3);color:var(--ink-1);font-family:ui-monospace,Menlo,monospace;
+}
+.schema span i{color:var(--ink-3);font-style:normal}
+
+/* ---------- tables ---------- */
+table.t{width:100%;border-collapse:collapse;font-size:16px}
+table.t td{padding:9px 12px 9px 0;border-bottom:1px solid var(--surface-3);vertical-align:top;line-height:1.34}
+table.t tr:last-child td{border-bottom:none}
+table.t td.b{color:var(--warm)} table.t td.a{color:var(--good);font-weight:620}
+table.t td.k{font-weight:650;white-space:nowrap}
+table.t.sm{font-size:13.5px} table.t.sm td{padding:6px 10px 6px 0}
+table.t th{text-align:left;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);
+  font-weight:700;padding:0 12px 8px 0;border-bottom:1px solid var(--surface-3)}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-size:13px;padding:5px 12px;border-radius:20px;background:var(--surface-2);border:1px solid var(--surface-3);color:var(--ink-2);font-weight:560}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* ---------- 4x2 pattern grid (short label over short detail) ---------- */
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:1fr;gap:10px}
+.pbox{
+  background:var(--surface-2);border:1px solid var(--surface-3);border-radius:8px;
+  padding:16px 12px;text-align:center;
+  display:flex;align-items:center;justify-content:center;min-height:72px;
+}
+.pbox.hd{border-top:3px solid var(--accent);font-size:15px;font-weight:680;color:var(--ink-1);line-height:1.28}
+.pbox.dt{font-size:13px;font-weight:490;color:var(--ink-2);line-height:1.3}
+
+/* ---------- table of contents ---------- */
+.toc{display:grid;grid-template-columns:1fr 1fr;gap:18px 36px}
+.toc-item{display:flex;align-items:flex-start;gap:14px}
+.toc-item .tn{
+  min-width:36px;height:36px;border-radius:8px;background:var(--surface-2);border:1px solid var(--surface-3);
+  display:grid;place-items:center;font-size:15px;font-weight:700;color:var(--accent);flex:none;
+}
+.toc-item .tt{display:flex;flex-direction:column;gap:3px;padding-top:2px}
+.toc-item .tt b{font-size:18px;font-weight:670;color:var(--ink-1);letter-spacing:-.008em}
+.toc-item .tt span{font-size:13.5px;color:var(--ink-2);line-height:1.32}
+
+/* ---------- chrome ---------- */
+.foot{
+  position:absolute;left:76px;right:76px;bottom:26px;display:flex;justify-content:space-between;
+  align-items:center;font-size:11.5px;color:var(--ink-3);border-top:1px solid var(--surface-3);padding-top:11px;
+}
+.foot .sec{font-weight:620;letter-spacing:.04em}
+.foot .pg{font-variant-numeric:tabular-nums}
+#bar{position:fixed;left:0;top:0;height:3px;background:var(--accent);z-index:60;transition:width .3s ease}
+#hud{
+  position:fixed;right:14px;bottom:12px;z-index:60;display:flex;gap:6px;align-items:center;
+  font-size:11.5px;color:var(--ink-3);background:var(--surface-1);border:1px solid var(--surface-3);
+  border-radius:20px;padding:5px 11px;box-shadow:var(--shadow);
+}
+#hud button{font:inherit;font-size:11.5px;color:var(--ink-2);background:none;border:none;cursor:pointer;padding:2px 6px;border-radius:4px}
+#hud button:hover{background:var(--surface-2);color:var(--ink-1)}
+#hud .t{font-variant-numeric:tabular-nums;font-weight:640;color:var(--ink-1);min-width:38px;text-align:right}
+#hud .sep{width:1px;height:13px;background:var(--surface-3)}
+
+#notes{
+  position:fixed;left:0;right:0;bottom:0;max-height:42vh;overflow:auto;z-index:70;
+  background:var(--surface-1);border-top:2px solid var(--accent);padding:16px 22px 18px;display:none;
+  box-shadow:0 -8px 28px rgba(0,0,0,.16);
+}
+#notes.show{display:block}
+#notes h6{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;font-weight:700}
+#notes .nb{font-size:15px;line-height:1.6;color:var(--ink-1);max-width:118ch;white-space:pre-wrap}
+#notes .time{float:right;font-size:12px;color:var(--ink-3);font-weight:640}
+
+#grid{position:fixed;inset:0;z-index:80;background:var(--surface-2);overflow:auto;padding:26px;
+  display:none;grid-template-columns:repeat(auto-fill,minmax(226px,1fr));gap:14px;align-content:start}
+#grid.show{display:grid}
+#grid .g{background:var(--surface-1);border:1px solid var(--surface-3);border-radius:8px;padding:13px;
+  cursor:pointer;min-height:100px;display:flex;flex-direction:column;gap:5px}
+#grid .g:hover{border-color:var(--accent)}
+#grid .g.cur{border-color:var(--accent);border-width:2px}
+#grid .gi{font-size:10.5px;color:var(--ink-3);font-variant-numeric:tabular-nums;letter-spacing:.05em}
+#grid .gt{font-size:13.5px;font-weight:640;line-height:1.26}
+#grid .gs{font-size:10.5px;color:var(--accent);font-weight:640;letter-spacing:.05em;text-transform:uppercase;margin-top:auto}
+
+@media print{
+  body{overflow:visible;background:#fff}
+  #stage{position:static;display:block} #deck{transform:none!important;width:100%;height:auto}
+  .slide{display:flex!important;position:relative;page-break-after:always;box-shadow:none;border-radius:0;
+    width:1280px;height:720px;opacity:1!important;visibility:visible!important;transform:none!important}
+  .frag{opacity:1!important;transform:none!important}
+  #hud,#bar,#notes,#grid{display:none!important}
+}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<div id="stage"><div id="deck">
+
+<!-- ═════════ 1 · TITLE ═════════ -->
+<section class="slide title" data-sec="Introduction" data-time="0:30"
+data-notes="30 seconds. Name, school, then move on.
+
+Say: 'I'm Neil, a rising senior at UIUC. I spent the summer on the cluster control plane team, working on how we install and manage software on our clusters.'">
+  <div class="wrap">
+    <div class="bar"></div>
+    <div class="eyebrow">Cerebras Systems</div>
+    <h1>Summer Internship<br>Presentation</h1>
+    <div class="who">
+      <b>Neil Shastri</b>
+      <span>University of Illinois at Urbana-Champaign '27</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ 1b · TABLE OF CONTENTS ═════════ -->
+<section class="slide" data-sec="Contents" data-time="0:30"
+data-notes="Read the eight section names, quickly — don't read the small descriptor text aloud, it's there for the audience to skim, not for you to narrate. Say 'here's the shape of the talk' and move on.">
+  <div class="eyebrow">Contents</div>
+  <h2>What we'll cover</h2>
+  <div class="content top">
+    <div class="toc">
+      <div class="toc-item"><div class="tn">1</div><div class="tt"><b>Context</b><span>The scale of the manual shell-script flow</span></div></div>
+      <div class="toc-item"><div class="tn">2</div><div class="tt"><b>Problem</b><span>Why it doesn't hold up at scale</span></div></div>
+      <div class="toc-item"><div class="tn">3</div><div class="tt"><b>Solution</b><span>Moving prometheus onto ArgoCD</span></div></div>
+      <div class="toc-item"><div class="tn">4</div><div class="tt"><b>Demo</b><span>Live</span></div></div>
+      <div class="toc-item"><div class="tn">5</div><div class="tt"><b>Results</b><span>Patterns now documented for the next app</span></div></div>
+      <div class="toc-item"><div class="tn">6</div><div class="tt"><b>Learnings</b><span>Starting from zero on Kubernetes</span></div></div>
+      <div class="toc-item"><div class="tn">7</div><div class="tt"><b>What's Next</b><span>Secrets, CI, and release scoping</span></div></div>
+      <div class="toc-item"><div class="tn">8</div><div class="tt"><b>Closing</b><span>Takeaways</span></div></div>
+    </div>
+  </div>
+  <div class="foot"><span class="sec">Contents</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 2 · OVERVIEW + SCALE ═════════ -->
+<section class="slide" data-sec="Overview" data-time="1:15"
+data-notes="Two clicks. The line lands alone first — let it sit for a beat before advancing.
+
+CLICK 1 — say it plainly: 'Today, every app is installed by shell.' Pause. Let that be the whole thought for a second.
+
+CLICK 2 — the numbers land. Read three aloud — 51,808 lines, 1,614 kubectl calls, 14 of 46 using Helm. Let the rest be seen.
+
+Then the things worth saying that aren&#39;t on the slide:
+ • &#39;These are counted from source, not estimated.&#39;
+ • &#39;Most apps don&#39;t use Helm at all — they apply raw YAML directly, so there&#39;s no packaged version of the app to point at or roll back.&#39;
+ • &#39;The scripts rewrite their own config files as they run, so what&#39;s in git isn&#39;t quite what gets installed.&#39;
+ • &#39;And per-cluster settings are a file a person edits on each management node. It goes through two rounds of substitution before anything runs — so the script that actually executes doesn&#39;t exist in any repository. You can&#39;t review it, and you can&#39;t preview what it will do.&#39;
+
+That last one is the strongest point on the slide and it isn&#39;t written anywhere on it. Don&#39;t skip it.">
+  <div class="eyebrow"><span class="num">1</span> Context</div>
+  <div class="content">
+    <h2 class="frag" data-f="1">Today, every cluster app is installed by shell:</h2>
+    <div class="stats c5 frag" data-f="2">
+      <div class="tile"><div class="n">46</div><div class="l">apps at bootstrap</div></div>
+      <div class="tile"><div class="n">193</div><div class="l">shell scripts</div></div>
+      <div class="tile"><div class="n">51,808</div><div class="l">lines</div></div>
+      <div class="tile"><div class="n">1,614</div><div class="l"><span class="mono">kubectl</span> calls</div></div>
+      <div class="tile"><div class="n">14/46</div><div class="l">use Helm at all</div></div>
+    </div>
+  </div>
+  <div class="foot"><span class="sec">Context</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 4 · PROBLEM — WHY IT BREAKS ═════════ -->
+<section class="slide" data-sec="Problem" data-time="1:20"
+data-notes="This is the conceptual point of the section. Take your time on the first bullet — it's the one that matters.
+
+BULLET 1 — 'The deployment system keeps track of whether each script finished. What it has nowhere is a description of what the cluster is supposed to contain. And because there's no description, there's nothing to compare the real cluster against.'
+
+BULLET 2 — 'So if someone changes something by hand, or a script half-succeeds, or an old version left objects behind, nothing anywhere notices.'
+
+THE TAKEAWAY — say this slowly, it's the whole reason the project exists: 'And that's the part that matters at our size. One cluster, you can hold in your head. Every cluster, across every datacenter, each with its own hand-edited settings file — you can't. The complexity doesn't grow with the number of clusters, it multiplies.'
+
+Then prometheus: 'This is why I picked it — it was the worst case in the tree. A single install wrapped in 123 kubectl calls, driven by 44 template variables and about 26 hand-edited settings.'
+
+If someone asks about PB3 specifically: PB3 orchestrates and schedules these scripts, and it does that part well, at large scale. The gap is that a script is the smallest thing it knows about.">
+  <div class="eyebrow"><span class="num">2</span> Problem</div>
+  <h2>Why that doesn't hold up <span class="lo">at scale</span></h2>
+  <div class="content">
+    <ul class="k frag" data-f="1">
+      <li>The system records <b>whether scripts finished</b> — not what the live cluster contains</li>
+      <li>Drift and stale resources may <b>go undetected</b>.</li>
+    </ul>
+    <div class="big frag" data-f="2" style="max-width:50ch">As clusters and applications multiply,<br><em>operational complexity multiplies with them.</em></div>
+    <div class="frag" data-f="3">
+      <div class="panel accent">
+        <h4>prometheus — the worst case in the tree</h4>
+        <div class="stats c3">
+          <div class="tile" style="background:var(--surface-1)"><div class="n">1,364</div><div class="l">lines in one script</div></div>
+          <div class="tile" style="background:var(--surface-1)"><div class="n">123</div><div class="l"><span class="mono">kubectl</span> calls around it</div></div>
+          <div class="tile" style="background:var(--surface-1)"><div class="n">~26</div><div class="l">hand-edited settings</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="sec">Problem</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 5 · SOLUTION — WHAT ARGOCD DOES ═════════ -->
+<section class="slide" data-sec="Solution" data-time="1:20"
+data-notes="This slide starts with only the Scripts box on screen — describe how things work today first.
+
+'Today, a person runs a program. It changes the cluster directly, and the config for that lives on a machine.'
+
+CLICK — ArgoCD arrives: 'Here's the alternative. Git says how the cluster should look, and ArgoCD's job is to keep the real thing matching that description. Config lives in review, not on a machine.'
+
+CLICK — the rule: 'That's the actual difference. Git holds a description of the cluster itself, not the steps to build it.'">
+  <div class="eyebrow"><span class="num">3</span> Solution</div>
+  <h2>What ArgoCD does <span class="lo">differently</span></h2>
+  <div class="content">
+    <div class="ba">
+      <div class="side b">
+        <h5>Scripts</h5>
+        <ul>
+          <li>A person runs a program</li>
+          <li>It changes the cluster</li>
+          <li>Config lives on a machine</li>
+        </ul>
+      </div>
+      <div class="arrow frag" data-f="1">→</div>
+      <div class="side a frag" data-f="1">
+        <h5>ArgoCD</h5>
+        <ul>
+          <li>Git is source of truth</li>
+          <li>ArgoCD continuously reconciles</li>
+          <li>Easy to see live state</li>
+        </ul>
+      </div>
+    </div>
+    <div class="rule frag" data-f="2">Git holds a <em>description of the cluster</em>,<br>not the steps to build it.</div>
+  </div>
+  <div class="foot"><span class="sec">Solution</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 6 · SOLUTION — ONE CHART, EVERY CLUSTER ═════════ -->
+<section class="slide" data-sec="Solution" data-time="1:10"
+data-notes="This answers 'why does this scale?'
+
+Walk the diagram: 'One packaged chart. Combined with a config file per cluster, in git. One generator turns that into a deployment per cluster.'
+
+Two points to make out loud:
+ • 'Config layers — there's a shared base, then a variant, then a per-cluster override. So a cluster's differences are a small file, not a different script.'
+ • 'And a cluster opts in by naming a chart version in its own file. So adding a cluster is a pull request. That also means a cluster can't end up running something nobody reviewed.'">
+  <div class="eyebrow"><span class="num">3</span> Solution</div>
+  <h2>One chart, <span class="lo">every app</span></h2>
+  <div class="content">
+    <div class="arch">
+      <div class="lane frag" data-f="1"><div class="lbl">One chart</div>
+        <div class="row"><div class="node hi"><b>workload-monitoring</b><span>published, versioned</span></div></div></div>
+      <div class="lane frag" data-f="2"><div class="lbl">× config</div>
+        <div class="row">
+          <div class="node cool"><b>Base</b><span>shared defaults</span></div>
+          <div class="node cool"><b>Variant</b><span>ha.yaml</span></div>
+          <div class="node cool"><b>Per cluster</b><span>cluster/&lt;name&gt;.yaml</span></div>
+          <div class="node cool"><b>Opt-in</b><span>names a version</span></div>
+        </div></div>
+      <div class="down frag" data-f="3">↓ &nbsp;one generator</div>
+      <div class="lane frag" data-f="3"><div class="lbl">→ N clusters</div>
+        <div class="row">
+          <div class="node good"><b>cluster A</b><span>Synced / Healthy</span></div>
+          <div class="node good"><b>cluster B</b><span>Synced / Healthy</span></div>
+          <div class="node good"><b>cluster N…</b><span>same chart</span></div>
+        </div></div>
+    </div>
+    <div class="rule frag" data-f="4">A cluster's differences are <em>a file in git</em>,<br>not a different script.</div>
+  </div>
+  <div class="foot"><span class="sec">Solution</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 7 · SOLUTION — GROUNDWORK + PILOT ═════════ -->
+<section class="slide" data-sec="Solution" data-time="1:15"
+data-notes="Emphasise that both of these came BEFORE the hard app. This is what made the work reusable rather than one-off.
+
+THE BASICS: 'I started from zero, so the first stretch was just building the foundation — what Kubernetes actually is, how we set up Argo, ApplicationSets, and root apps. That's the vocabulary everything else in this talk is built on.'
+
+THE PILOT: 'Then I migrated metrics-server first, on purpose, because it was one of the simplest apps in the tree — an upstream chart used almost as-is. It was the cheap place to learn the surface-level patterns: packaging, publishing, how sync and health checks actually behave, and what it looks like deploying the same thing to many clusters. That's where I became comfortable, before taking on prometheus.'">
+  <div class="eyebrow"><span class="num">3</span> Solution</div>
+  <h2>Groundwork <span class="lo">before the hard app</span></h2>
+  <div class="content">
+    <div class="cols c2">
+      <div class="frag" data-f="1">
+        <div class="panel cool">
+          <h4>Investigated first</h4>
+          <ul class="k s">
+            <li>What is Kubernetes?</li>
+            <li>How do we set up Argo?</li>
+            <li>ApplicationSets</li>
+            <li>Root Apps</li>
+          </ul>
+        </div>
+      </div>
+      <div class="frag" data-f="2">
+        <div class="panel cool">
+          <h4>Then migrated the simplest app first</h4>
+          <ul class="k s">
+            <li>Learned the loop cheaply</li>
+            <li>Surfaced base patterns</li>
+            <li>Deployed to many clusters</li>
+            <li>Became comfortable before Prometheus</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="sec">Solution</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 8 · SOLUTION — ARCHITECTURE ═════════ -->
+<section class="slide" data-sec="Solution" data-time="1:40"
+data-notes="Walk the diagram top to bottom as it builds.
+
+ • SOURCES — 'The upstream monitoring chart, pinned to a specific version. Plus all of our own additions — exporters, alert rules, dashboards — as part of the same chart rather than bolted on afterwards.'
+ • ONE CHART — 'A build turns that into a single packaged chart, published to our internal registry.'
+ • THREE SOURCES — 'ArgoCD combines three things: that chart, the per-cluster config from git, and a small set of scripts that run before and after installation.'
+ • ON CLUSTER — 'Which lands three deployments: the monitoring stack itself, the CRD operator kept separate on purpose, and Thanos.'
+
+Then the release approach: 'I shipped this as a numbered series of small releases. Each one went out on its own and got tested on a real cluster before the next one started — so when something broke there was only one thing it could have been.'">
+  <div class="eyebrow"><span class="num">3</span> Solution</div>
+  <h2>prometheus: the architecture</h2>
+  <div class="content">
+    <div class="arch">
+      <div class="lane frag" data-f="1"><div class="lbl">Sources</div>
+        <div class="row">
+          <div class="node"><b>Upstream chart</b><span>pinned version</span></div>
+          <div class="node"><b>Our additions</b><span>exporters · rules · dashboards</span></div>
+        </div></div>
+      <div class="down frag" data-f="2">↓ &nbsp;build</div>
+      <div class="lane frag" data-f="2"><div class="lbl">One chart</div>
+        <div class="row"><div class="node hi"><b>workload-monitoring</b><span>→ internal registry</span></div></div></div>
+      <div class="down frag" data-f="3">↓ &nbsp;ArgoCD combines</div>
+      <div class="lane frag" data-f="3"><div class="lbl">3 inputs</div>
+        <div class="row">
+          <div class="node cool"><b>Chart</b><span>version-pinned</span></div>
+          <div class="node cool"><b>Config</b><span>from git</span></div>
+          <div class="node cool"><b>Setup scripts</b><span>before / after</span></div>
+        </div></div>
+      <div class="down frag" data-f="4">↓</div>
+      <div class="lane frag" data-f="4"><div class="lbl">On cluster</div>
+        <div class="row">
+          <div class="node good"><b>monitoring</b><span>263 objects</span></div>
+          <div class="node good"><b>CRD operator</b><span>kept separate</span></div>
+          <div class="node good"><b>Thanos</b><span>query layer</span></div>
+        </div></div>
+    </div>
+    <div class="rule frag" data-f="5">Shipped as small numbered releases —<br>each tested on a <em>real cluster</em> before the next.</div>
+  </div>
+  <div class="foot"><span class="sec">Solution</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 9 · SOLUTION — WHY IT WAS HARD ═════════ -->
+<section class="slide" data-sec="Solution" data-time="1:30"
+data-notes="Don't read every number — pick two. '263 objects to get right, where the upstream chart alone accounts for 131. 92 dashboards, generated at build time rather than checked in.'
+
+Then four things that each had to be solved on their own, one click each:
+
+ 1. ACCESS CONTROL — 'Grafana folder permissions and locked dashboards had to work the same way they did before — the wrong ACL here means the wrong people can see something they shouldn't.'
+
+ 2. ROUTING — 'External access moved onto the newer Gateway API instead of the old Ingress, and that changed how every URL into this app resolves.'
+
+ 3. HOOKS / JOBS — 'A handful of steps only make sense before or after a sync — retaining a PV, waiting for the operator to report healthy, checking a credential exists. Each one runs with permissions that exist only for the seconds it's running.'
+
+ 4. DEPENDENCIES — 'The shared CRDs are owned by a separate app on purpose, and Thanos has to exist before this chart's default dashboard datasource will resolve. Get the order wrong and the app looks healthy while pointing at nothing.'">
+  <div class="eyebrow"><span class="num">3</span> Solution</div>
+  <h2>Why prometheus <span class="lo">was hard</span></h2>
+  <div class="content top">
+    <div class="stats c5 frag" data-f="1">
+      <div class="tile"><div class="n">263</div><div class="l">objects to get right</div></div>
+      <div class="tile"><div class="n">342</div><div class="l">alerts + rules</div></div>
+      <div class="tile"><div class="n">92</div><div class="l">dashboards</div></div>
+      <div class="tile"><div class="n">6</div><div class="l">exporters to reproduce</div></div>
+      <div class="tile"><div class="n">8</div><div class="l">secrets &amp; certs referenced</div></div>
+    </div>
+    <div class="cols c4">
+      <div class="panel warm frag" data-f="2">
+        <h4>Access Control</h4>
+        <div class="p">Folder permissions, locked dashboards</div>
+      </div>
+      <div class="panel warm frag" data-f="3">
+        <h4>Routing</h4>
+        <div class="p">Moved onto the newer Gateway API</div>
+      </div>
+      <div class="panel warm frag" data-f="4">
+        <h4>Hooks / Jobs</h4>
+        <div class="p">Run before/after a sync</div>
+      </div>
+      <div class="panel warm frag" data-f="5">
+        <h4>Dependencies</h4>
+        <div class="p">CRDs and Thanos owned by other apps</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="sec">Solution</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 10 · SOLUTION — CONVERGENCE ★ ═════════ -->
+<section class="slide" data-sec="Solution" data-time="1:30"
+data-notes="★ THE STRONGEST SLIDE. Land it slowly, three clicks.
+
+Set up WHO the two installers are, because nobody will infer it: 'There are two ways this app gets installed. ArgoCD, from git, on clusters we've already migrated. And the bootstrap installer, which runs when a brand-new cluster gets built for the first time. Both have to keep existing — you can't use ArgoCD to install a cluster that doesn't have Kubernetes running yet.'
+
+Then the problem: 'So for most of the summer there were two separate implementations that had to behave identically, forever. A reviewer called that out directly — I was sharing files between them, not sharing the actual chart.'
+
+ • CLICK 1 — 'At the start there was one script and no ArgoCD.'
+ • CLICK 2 — 'During the migration both existed, each building the app its own way. That's a permanent maintenance cost, and they can quietly stop matching.'
+ • CLICK 3 — 'And last week that closed. The bootstrap installer now installs the same chart ArgoCD does, and the old script was deleted.'
+
+Then say the honest cost out loud, even though it's not on the slide: 'That had a consequence. Twelve of my tests worked by running both versions and comparing them — and there's no second version left. So they were deleted too, on purpose. A test that loses the thing it was comparing against doesn't get weaker; it just starts confirming whatever my own code already does, which is the exact problem those tests existed to catch.'">
+  <div class="eyebrow"><span class="num">3</span> Solution</div>
+  <h2>ArgoCD and the installer <span class="lo">now share one chart</span></h2>
+  <div class="content">
+    <div class="prog">
+      <div class="step s1 frag" data-f="1">
+        <div class="tag">Before</div>
+        <h5>Only the script</h5>
+        <p>No ArgoCD anywhere.</p>
+        <div class="mark">1,364 lines</div>
+      </div>
+      <div class="to frag" data-f="2">→</div>
+      <div class="step s2 frag" data-f="2">
+        <div class="tag">During</div>
+        <h5>Two installers</h5>
+        <p>Each built the app its own way.</p>
+        <div class="mark">⚠ they can stop matching</div>
+      </div>
+      <div class="to frag" data-f="3">→</div>
+      <div class="step s3 frag" data-f="3">
+        <div class="tag">Now</div>
+        <h5>Two installers, one chart</h5>
+        <p>The old script is deleted.</p>
+        <div class="mark">✓ they can't disagree</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="sec">Solution</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 11 · DEMO (blank) ═════════ -->
+<section class="slide" data-sec="Demo" data-time="—"
+data-notes="Blank on purpose — switch away from the deck to the live demo here.">
+  <div class="eyebrow"><span class="num">4</span> Demo</div>
+  <div class="content"></div>
+  <div class="foot"><span class="sec">Demo</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 12 · RESULTS — DECISIONS ═════════ -->
+<section class="slide" data-sec="Results" data-time="1:30"
+data-notes="Frame it: 'The migration didn't just move one app. It settled decisions that every app after it would otherwise have to make independently — and I had a strong voice in each of these.'
+
+One sentence each:
+ • ROLLOUT — 'One generator, per-cluster config in git, and a cluster opts in by naming a version in its own file. Adding a cluster is a pull request.'
+ • CHART BUILD — 'We wrap the upstream chart at a pinned version and fold our own content in as part of it. That makes the upstream version explicit and reviewable, instead of being whatever the script last downloaded.'
+ • TOPOLOGY — 'One shared hub, with the workload clusters attached to it — rather than every management cluster running its own separate copy. That centralises what's deployed where. And it was proven safe: about 258 running objects were taken over without touching them.'
+ • SHIPPING — 'Built from the monorepo and published to our internal registry, with the development registry wired up and production deliberately not, so nothing can accidentally publish to production.'
+
+Then the counterfactual, deliberately: 'Had we started with an easy app, most of these would still be open — and they'd get discovered one at a time, slowly, by whoever hit them first.'
+
+Then the reach beyond the team: 'These weren't just internal notes — they gave me a shared vocabulary to actually discuss ideas with other teams, like Cloud Platform and the Inference Service Platform team.'">
+  <div class="eyebrow"><span class="num">5</span> Results</div>
+  <h2>Patterns that have been <span class="lo">Surfaced</span></h2>
+  <div class="content">
+    <div class="pgrid frag" data-f="1">
+      <div class="pbox hd">Chart Build</div>
+      <div class="pbox hd">Establishing Prerequisites</div>
+      <div class="pbox hd">PreSync Hooks</div>
+      <div class="pbox hd">PostSync Checks</div>
+      <div class="pbox hd">Defining Health</div>
+      <div class="pbox hd">Reusing / Abstraction</div>
+      <div class="pbox hd">Secret Consumption</div>
+      <div class="pbox hd">ArgoCD Architecture</div>
+    </div>
+    <div class="panel warm frag" data-f="2">
+      <h4>Had we started with an easy app</h4>
+      <div class="p">Most of these would still be open — found one at a time, slowly, by whoever hit them first.</div>
+    </div>
+    <div class="panel accent frag" data-f="3">
+      <h4>A shared vocabulary for other teams</h4>
+      <div class="p">Enough to discuss ideas with <b>Cloud Platform</b> and the <b>Inference Service Platform</b> team.</div>
+    </div>
+  </div>
+  <div class="foot"><span class="sec">Results</span><span class="pg"></span></div>
+</section>
+
+
+<!-- ═════════ 13 · LESSONS — STARTED FROM ZERO ═════════ -->
+<section class="slide" data-sec="Learnings" data-time="1:20"
+data-notes="Zero experience with any of these three on day one. Then land what the app actually was: an observability stack — prometheus, grafana, alertmanager, and everything wired between them — arguably the most technically challenging and important deployment in the tree.">
+  <div class="eyebrow"><span class="num">6</span> Learnings</div>
+  <h2>I started having never <span class="lo">touched Kubernetes</span></h2>
+  <div class="content">
+    <div class="cols c3 frag" data-f="1">
+      <div class="pbox hd">Kubernetes</div>
+      <div class="pbox hd">Helm</div>
+      <div class="pbox hd">ArgoCD</div>
+    </div>
+    <div class="big frag" data-f="2">…and arguably the most technically challenging and important deployment of all…</div>
+    <div class="panel accent frag" data-f="3">
+      <h4>An Observability Stack</h4>
+      <div class="p">prometheus, grafana, alertmanager, etc.</div>
+    </div>
+  </div>
+  <div class="foot"><span class="sec">Learnings</span><span class="pg"></span></div>
+</section>
+
+
+
+<!-- ═════════ 15 · WHAT'S NEXT ═════════ -->
+<section class="slide" data-sec="What's Next" data-time="1:45"
+data-notes="Bigger-picture decisions for the apps that come after this one:
+ • SECRET PROVISIONING — the chart reads credentials but never creates them, by design. Something else still has to.
+ • CI AUTOMATION — building charts and copying in images without a human running make by hand.
+ • RELEASE SCOPING — which clusters, which datacenters, and what format changes roll out in.
+
+Close: I'd already begun scoping some of this out during the internship — cluster rings/ Argo Rollouts — to help the team plan ahead.">
+  <div class="eyebrow"><span class="num">7</span> What's next</div>
+  <h2>What's left</h2>
+  <div class="content">
+    <div class="cols c3 frag" data-f="1">
+      <div class="panel accent">
+        <h4>CI automation</h4>
+        <div class="p">Building and publishing charts, copying in images, <b>without a human</b>.</div>
+      </div>
+      <div class="panel accent">
+        <h4>Release scoping</h4>
+        <div class="p">Which clusters, which datacenters, <b>what format</b>.</div>
+      </div>
+      <div class="panel accent">
+        <h4>Secret provisioning</h4>
+        <div class="p">Who creates the credentials <b>the chart only reads</b>.</div>
+      </div>
+    </div>
+    <div class="rule frag" data-f="2">The next migrations follow <em>written pattern</em>,<br>not research.</div>
+    <div class="panel warm frag" data-f="3">
+      <div class="p">Throughout the internship, I had already begun scoping these out — <b>cluster rings</b>/ <b>Argo Rollouts</b> — to help the team plan ahead.</div>
+    </div>
+  </div>
+  <div class="foot"><span class="sec">What's Next</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 16 · CLOSING ═════════ -->
+<section class="slide" data-sec="Closing" data-time="1:00"
+data-notes="Slow down. Three takeaways, then thank you.
+
+ 1. 'The gap wasn't a tooling problem. The old system tracked whether scripts finished; there was no description of the cluster to check against. Everything else follows from adding one.'
+ 2. 'Starting with the hardest application was the leverage. prometheus hit almost every difficult case at once, so the architecture it forced is the general one — documented, and already being reused.'
+ 3. 'And it ends with one implementation instead of two. ArgoCD and the bootstrap installer install the same chart, so they can't drift apart.'
+
+Then thank Agam and the team by name, mention the cross-team conversations, and hand over to questions.">
+  <div class="eyebrow"><span class="num">8</span> Closing</div>
+  <h2>Takeaways</h2>
+  <div class="content">
+    <div class="cols c3">
+      <div class="panel accent frag" data-f="1">
+        <h4>01</h4>
+        <div class="p">There was <b>no description of the cluster</b> to check against. Now there is.</div>
+      </div>
+      <div class="panel accent frag" data-f="2">
+        <h4>02</h4>
+        <div class="p">The hardest app first <b>generalised</b> the architecture, making it easy for others to follow.</div>
+      </div>
+      <div class="panel accent frag" data-f="3">
+        <h4>03</h4>
+        <div class="p">It ends with <b>one implementation</b>, not two.</div>
+      </div>
+    </div>
+    <div class="frag" data-f="4" style="margin-top:auto;padding-top:24px;border-top:1px solid var(--surface-3);display:flex;justify-content:space-between;align-items:flex-end">
+      <div>
+        <div style="font-size:30px;font-weight:700;letter-spacing:-.015em">Thank you</div>
+        <div style="font-size:14.5px;color:var(--ink-2);margin-top:6px">Agam and the larger cluster software org</div>
+      </div>
+      <div style="font-size:14.5px;color:var(--ink-2);text-align:right">Questions welcome</div>
+    </div>
+  </div>
+  <div class="foot"><span class="sec">Closing</span><span class="pg"></span></div>
+</section>
+
+
+
+</div></div>
+
+<div id="notes"><h6>Speaker notes <span class="time" id="ntime"></span></h6><div class="nb" id="nbody"></div></div>
+<div id="grid"></div>
+
+<div id="hud">
+  <button id="bprev" title="Back (←)">←</button>
+  <span class="pg" id="hpg">1 / 1</span>
+  <button id="bnext" title="Next (→)">→</button>
+  <span class="sep"></span>
+  <span class="t" id="clock">0:00</span>
+  <button id="btimer" title="Timer (R)">start</button>
+  <span class="sep"></span>
+  <button id="bnotes" title="Notes (N)">notes</button>
+  <button id="bgrid" title="Grid (O)">grid</button>
+  <button id="btheme" title="Theme (T)">theme</button>
+</div>
+
+<script>
+(function(){
+  const deck   = document.getElementById('deck');
+  const slides = Array.from(deck.querySelectorAll('.slide'));
+  const N      = slides.length;
+  let i = 0, f = 0;
+
+  /* fragment groups: elements sharing data-f reveal together */
+  function groups(s){
+    const map = new Map();
+    s.querySelectorAll('.frag').forEach(el=>{
+      const k = parseInt(el.dataset.f || '1', 10);
+      if(!map.has(k)) map.set(k, []);
+      map.get(k).push(el);
+    });
+    return [...map.keys()].sort((a,b)=>a-b).map(k=>map.get(k));
+  }
+  function paint(s, upto){
+    const g = groups(s);
+    g.forEach((els,n)=>els.forEach(el=>{
+      el.classList.toggle('on', n < upto);
+      el.classList.remove('dim');
+    }));
+    return g.length;
+  }
+
+  function fit(){
+    const pad = 26;
+    deck.style.transform = 'scale('+Math.min((innerWidth-pad*2)/1280,(innerHeight-pad*2)/720)+')';
+  }
+  addEventListener('resize', fit); fit();
+
+  slides.forEach((s,n)=>{ const p=s.querySelector('.foot .pg'); if(p) p.textContent=(n+1)+' / '+N; });
+
+  const nbody=document.getElementById('nbody'), ntime=document.getElementById('ntime');
+
+  function show(n, frag){
+    i = Math.max(0, Math.min(N-1, n));
+    const s = slides[i];
+    const total = groups(s).length;
+    f = frag === 'all' ? total : Math.max(0, Math.min(total, frag||0));
+    slides.forEach((x,k)=>{
+      x.classList.toggle('active', k===i);
+      if(k!==i) paint(x, 0);
+    });
+    paint(s, f);
+    document.getElementById('bar').style.width = ((i+1)/N*100)+'%';
+    document.getElementById('hpg').textContent = (i+1)+' / '+N + (total? ' · '+f+'/'+total : '');
+    nbody.textContent = s.dataset.notes || '—';
+    ntime.textContent = s.dataset.time ? ('target '+s.dataset.time) : '';
+    document.querySelectorAll('#grid .g').forEach((g,k)=>g.classList.toggle('cur',k===i));
+    location.hash = 's'+(i+1);
+  }
+
+  function next(){
+    const total = groups(slides[i]).length;
+    if(f < total) show(i, f+1); else if(i < N-1) show(i+1, 0);
+  }
+  function prev(){
+    if(f > 0) show(i, f-1);
+    else if(i > 0) show(i-1, 'all');
+  }
+
+  const grid=document.getElementById('grid');
+  slides.forEach((s,n)=>{
+    const h=s.querySelector('h1,h2');
+    const d=document.createElement('div');
+    d.className='g';
+    d.innerHTML='<div class="gi">'+String(n+1).padStart(2,'0')+'</div>'+
+                '<div class="gt">'+(h?h.textContent.replace(/\s+/g,' ').trim():'')+'</div>'+
+                '<div class="gs">'+(s.dataset.sec||'')+'</div>';
+    d.onclick=()=>{ grid.classList.remove('show'); show(n,'all'); };
+    grid.appendChild(d);
+  });
+
+  let t0=null, acc=0, run=false;
+  const clock=document.getElementById('clock'), bt=document.getElementById('btimer');
+  setInterval(()=>{
+    const ms=acc+(run&&t0?Date.now()-t0:0), sec=Math.floor(ms/1000);
+    clock.textContent=Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');
+  },250);
+  function timer(){ if(run){acc+=Date.now()-t0;run=false;bt.textContent='start';} else {t0=Date.now();run=true;bt.textContent='pause';} }
+  bt.onclick=timer;
+
+  document.getElementById('bnext').onclick=next;
+  document.getElementById('bprev').onclick=prev;
+  document.getElementById('bnotes').onclick=()=>document.getElementById('notes').classList.toggle('show');
+  document.getElementById('bgrid').onclick=()=>grid.classList.toggle('show');
+  document.getElementById('btheme').onclick=()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    document.documentElement.setAttribute('data-theme', c==='dark'?'light':'dark');
+  };
+
+  addEventListener('keydown', e=>{
+    const k=e.key;
+    if(k==='ArrowRight'||k==='PageDown'||k===' '){ e.preventDefault(); next(); }
+    else if(k==='ArrowLeft'||k==='PageUp'){ e.preventDefault(); prev(); }
+    else if(k==='ArrowDown'){ e.preventDefault(); if(i<N-1) show(i+1,'all'); }   /* skip a whole slide */
+    else if(k==='ArrowUp'){ e.preventDefault(); if(i>0) show(i-1,'all'); }
+    else if(k==='Home'){ show(0,0); } else if(k==='End'){ show(N-1,'all'); }
+    else if(k==='o'||k==='O'){ grid.classList.toggle('show'); }
+    else if(k==='Escape'){ grid.classList.remove('show'); document.getElementById('notes').classList.remove('show'); }
+    else if(k==='n'||k==='N'){ document.getElementById('notes').classList.toggle('show'); }
+    else if(k==='t'||k==='T'){ document.getElementById('btheme').click(); }
+    else if(k==='r'||k==='R'){ timer(); }
+  });
+
+  deck.addEventListener('click', e=>{ if(!e.target.closest('#hud')) next(); });
+
+  const m=/^#s(\d+)$/.exec(location.hash);
+  show(m?parseInt(m[1],10)-1:0, 0);
+})();
+</script>
+</body>
+</html>
