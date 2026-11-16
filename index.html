@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Summer Internship Presentation — Neil Shastri</title>
+<title>Inferact Presentation — Neil Shastri</title>
 <style>
 /* ==========================================================================
    THEME BLOCK — EDIT ONLY THIS TO MATCH THE COMPANY TEMPLATE
@@ -226,6 +226,24 @@ table.t th{text-align:left;font-size:11px;letter-spacing:.07em;text-transform:up
 .toc-item .tt b{font-size:18px;font-weight:670;color:var(--ink-1);letter-spacing:-.008em}
 .toc-item .tt span{font-size:13.5px;color:var(--ink-2);line-height:1.32}
 
+/* ---------- system diagram: zones + links ---------- */
+.sys{display:grid;grid-template-columns:1fr 112px 1.1fr 118px 1.2fr;align-items:stretch}
+.zone{border:1.5px dashed var(--ink-3);border-radius:12px;padding:13px 13px 12px;display:flex;flex-direction:column;gap:9px}
+.zone .zl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--ink-2);margin-bottom:2px}
+.zone.git{border-color:var(--cool)} .zone.aws{border-color:var(--accent)} .zone.dc{border-color:var(--good)}
+.link{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:0 6px}
+.link div{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10.5px;line-height:1.25;color:var(--ink-3);text-align:center;font-weight:560}
+.link .ar{font-size:20px;color:var(--ink-2);font-weight:400}
+.arch .ra{align-self:center;color:var(--ink-3);font-size:18px}
+
+/* ---------- horizontal step flow ---------- */
+.flow{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.fstep{background:var(--surface-2);border:1px solid var(--surface-3);border-top:3px solid var(--cool);border-radius:10px;padding:14px 12px;display:flex;flex-direction:column;gap:6px}
+.fstep.ac{border-top-color:var(--accent)} .fstep.gd{border-top-color:var(--good)}
+.fstep .fn{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--ink-3)}
+.fstep b{font-size:15.5px;line-height:1.22;font-weight:680}
+.fstep p{font-size:13px;line-height:1.35;color:var(--ink-2)}
+
 /* ---------- chrome ---------- */
 .foot{
   position:absolute;left:76px;right:76px;bottom:26px;display:flex;justify-content:space-between;
@@ -281,58 +299,146 @@ table.t th{text-align:left;font-size:11px;letter-spacing:.07em;text-transform:up
 
 <!-- ═════════ 1 · TITLE ═════════ -->
 <section class="slide title" data-sec="Introduction" data-time="0:30"
-data-notes="30 seconds. Name, school, then move on.
+data-notes="30 seconds. Name, school, one-line framing.
 
-Say: 'I'm Neil, a rising senior at UIUC. I spent the summer on the cluster control plane team, working on how we install and manage software on our clusters.'">
+'I'm Neil, a senior at UIUC. This summer I was on the cluster control plane team at Cerebras. I led the effort to move how software gets onto Cerebras's AI clusters from a giant imperative shell script to a GitOps system, and I started with the hardest app, the observability stack. I'll spend most of the time on the system design and the decisions behind it.'">
   <div class="wrap">
     <div class="bar"></div>
-    <div class="eyebrow">Cerebras Systems</div>
-    <h1>Summer Internship<br>Presentation</h1>
+    <div class="eyebrow">Neil Shastri · Inferact Presentation</div>
+    <h1>Making Compute Useful<br>the Day It Arrives</h1>
+    <div class="line" style="margin-top:18px">GitOps and observability for a fleet of AI clusters</div>
     <div class="who">
       <b>Neil Shastri</b>
-      <span>University of Illinois at Urbana-Champaign '27</span>
+      <span>Cluster Control Plane Intern, Cerebras Systems · Summer 2026 · UIUC '27</span>
     </div>
   </div>
 </section>
 
-<!-- ═════════ 1b · TABLE OF CONTENTS ═════════ -->
-<section class="slide" data-sec="Contents" data-time="0:30"
-data-notes="Read the eight section names, quickly — don't read the small descriptor text aloud, it's there for the audience to skim, not for you to narrate. Say 'here's the shape of the talk' and move on.">
-  <div class="eyebrow">Contents</div>
+<!-- ═════════ 2 · AGENDA ═════════ -->
+<section class="slide" data-sec="Agenda" data-time="0:30"
+data-notes="Don't read it. 'About 40 minutes. Most of the time is on system design, observability, and the decisions. Please interrupt with questions anywhere.'">
+  <div class="eyebrow">Agenda</div>
   <h2>What we'll cover</h2>
   <div class="content top">
     <div class="toc">
-      <div class="toc-item"><div class="tn">1</div><div class="tt"><b>Context</b><span>The scale of the manual shell-script flow</span></div></div>
-      <div class="toc-item"><div class="tn">2</div><div class="tt"><b>Problem</b><span>Why it doesn't hold up at scale</span></div></div>
-      <div class="toc-item"><div class="tn">3</div><div class="tt"><b>Solution</b><span>Moving prometheus onto ArgoCD</span></div></div>
-      <div class="toc-item"><div class="tn">4</div><div class="tt"><b>Demo</b><span>Live</span></div></div>
-      <div class="toc-item"><div class="tn">5</div><div class="tt"><b>Results</b><span>Patterns now documented for the next app</span></div></div>
-      <div class="toc-item"><div class="tn">6</div><div class="tt"><b>Learnings</b><span>Starting from zero on Kubernetes</span></div></div>
-      <div class="toc-item"><div class="tn">7</div><div class="tt"><b>What's Next</b><span>Secrets, CI, and release scoping</span></div></div>
-      <div class="toc-item"><div class="tn">8</div><div class="tt"><b>Closing</b><span>Takeaways</span></div></div>
+      <div class="toc-item"><div class="tn">1</div><div class="tt"><b>The thesis</b><span>Onboarding compute is the hidden bottleneck</span></div></div>
+      <div class="toc-item"><div class="tn">2</div><div class="tt"><b>Background</b><span>Cerebras, and why the fleet must grow 15×</span></div></div>
+      <div class="toc-item"><div class="tn">3</div><div class="tt"><b>Problem</b><span>One giant imperative script</span></div></div>
+      <div class="toc-item"><div class="tn">4</div><div class="tt"><b>Approach</b><span>My role, and how I sequenced the work</span></div></div>
+      <div class="toc-item"><div class="tn">5</div><div class="tt"><b>System design</b><span>Hubs, agents, environments, artifacts</span></div></div>
+      <div class="toc-item"><div class="tn">6</div><div class="tt"><b>Observability</b><span>The stack, its storage, and who watches it</span></div></div>
+      <div class="toc-item"><div class="tn">7</div><div class="tt"><b>Decisions</b><span>The hard calls and their tradeoffs</span></div></div>
+      <div class="toc-item"><div class="tn">8</div><div class="tt"><b>Rollout &amp; results</b><span>Shipping safely, and what changed</span></div></div>
+      <div class="toc-item"><div class="tn">9</div><div class="tt"><b>Why Inferact</b><span>The same problem for vLLM, and what's next</span></div></div>
     </div>
   </div>
-  <div class="foot"><span class="sec">Contents</span><span class="pg"></span></div>
+  <div class="foot"><span class="sec">Agenda</span><span class="pg"></span></div>
 </section>
 
-<!-- ═════════ 2 · OVERVIEW + SCALE ═════════ -->
-<section class="slide" data-sec="Overview" data-time="1:15"
-data-notes="Two clicks. The line lands alone first — let it sit for a beat before advancing.
+<!-- ═════════ 3 · THESIS ═════════ -->
+<section class="slide" data-sec="Thesis" data-time="1:30"
+data-notes="The frame for the whole talk. Say it with conviction.
 
-CLICK 1 — say it plainly: 'Today, every app is installed by shell.' Pause. Let that be the whole thought for a second.
-
-CLICK 2 — the numbers land. Read three aloud — 51,808 lines, 1,614 kubectl calls, 14 of 46 using Helm. Let the rest be seen.
-
-Then the things worth saying that aren&#39;t on the slide:
- • &#39;These are counted from source, not estimated.&#39;
- • &#39;Most apps don&#39;t use Helm at all — they apply raw YAML directly, so there&#39;s no packaged version of the app to point at or roll back.&#39;
- • &#39;The scripts rewrite their own config files as they run, so what&#39;s in git isn&#39;t quite what gets installed.&#39;
- • &#39;And per-cluster settings are a file a person edits on each management node. It goes through two rounds of substitution before anything runs — so the script that actually executes doesn&#39;t exist in any repository. You can&#39;t review it, and you can&#39;t preview what it will do.&#39;
-
-That last one is the strongest point on the slide and it isn&#39;t written anywhere on it. Don&#39;t skip it.">
-  <div class="eyebrow"><span class="num">1</span> Context</div>
+CLICK 1: 'Everyone's fighting to get accelerators. GPUs, TPUs, wafer-scale chips. They're scarce and expensive.'
+CLICK 2: 'The part people underestimate is next. Once the hardware lands, someone has to install the software stack, configure it per cluster, and wire up monitoring before anyone trusts it with traffic. At most places that's manual, per cluster, and slow.'
+CLICK 3: 'Serving is the only step that creates value.'
+CLICK 4: 'Every day a cluster sits between racked and serving is compute you paid for that's doing nothing. My work was on that middle box.'">
+  <div class="eyebrow"><span class="num">1</span> The thesis</div>
+  <h2>Getting compute is hard. <span class="lo">Making it useful is harder.</span></h2>
   <div class="content">
-    <h2 class="frag" data-f="1">Today, every cluster app is installed by shell:</h2>
+    <div class="prog">
+      <div class="step s1 frag" data-f="1">
+        <div class="tag">Step 1</div>
+        <h5>Acquire</h5>
+        <p>Accelerators are scarce, expensive, and allocated months out.</p>
+        <div class="mark">hard to get</div>
+      </div>
+      <div class="to frag" data-f="2">→</div>
+      <div class="step s2 frag" data-f="2">
+        <div class="tag">Step 2 · the hidden gap</div>
+        <h5>Onboard</h5>
+        <p>Install the stack, configure each cluster, wire up observability, often by hand, one cluster at a time.</p>
+        <div class="mark">⚠ idle until ready</div>
+      </div>
+      <div class="to frag" data-f="3">→</div>
+      <div class="step s3 frag" data-f="3">
+        <div class="tag">Step 3</div>
+        <h5>Serve</h5>
+        <p>Tokens, users, revenue. The only step that creates value.</p>
+        <div class="mark">✓ value</div>
+      </div>
+    </div>
+    <div class="rule frag" data-f="4">Every day between <em>racked</em> and <em>serving</em><br>is paid-for compute doing nothing.</div>
+  </div>
+  <div class="foot"><span class="sec">Thesis</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 4 · BACKGROUND ═════════ -->
+<section class="slide" data-sec="Background" data-time="1:15"
+data-notes="About a minute. They know GPUs well and may know little about Cerebras.
+
+HARDWARE: 'Cerebras builds the WSE-3, a single chip the size of a whole silicon wafer, packaged into a system called the CS-3.'
+CLUSTER: 'A cluster is a group of CS-3s plus on-prem management nodes. Those nodes run Kubernetes, which hosts the software that makes the cluster work: networking, storage, secrets, policy, monitoring.'
+FLEET: 'Hundreds of these clusters across datacenters, with no public internet access. Everything they install has to come from mirrors we control.'
+
+'My team owns the control plane, the layer that installs and manages that software on every cluster.'">
+  <div class="eyebrow"><span class="num">2</span> Background</div>
+  <h2>Cerebras <span class="lo">in one slide</span></h2>
+  <div class="content">
+    <div class="cols c3">
+      <div class="panel cool frag" data-f="1">
+        <h4>The hardware</h4>
+        <div class="p"><b>WSE-3</b>: one wafer-scale AI chip, packaged in a <b>CS-3</b> system.</div>
+      </div>
+      <div class="panel cool frag" data-f="2">
+        <h4>The cluster</h4>
+        <div class="p">CS-3s + on-prem management nodes running <b>Kubernetes</b> for networking, storage, monitoring.</div>
+      </div>
+      <div class="panel cool frag" data-f="3">
+        <h4>The fleet</h4>
+        <div class="p"><b>Hundreds</b> of clusters across datacenters, <b>no public internet</b>.</div>
+      </div>
+    </div>
+    <div class="rule frag" data-f="4">My team, <em>cluster control plane</em>: the software that<br>installs and manages everything on those clusters.</div>
+  </div>
+  <div class="foot"><span class="sec">Background</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 5 · WHY SCALE — OPENAI DEAL ═════════ -->
+<section class="slide" data-sec="Background" data-time="1:30"
+data-notes="This sets the stakes for the whole talk.
+
+CLICK 1: 'In January, OpenAI and Cerebras announced a deal for 750 megawatts of low-latency inference compute, coming online in tranches through 2028. Public reporting puts it above $10 billion.'
+CLICK 2: 'When I started in May, Cerebras ran roughly 50 megawatts. That's a 15x scale-up in about two and a half years.'
+CLICK 3: 'Under the old imperative system, managing 750 megawatts would have been close to impossible. Fifteen times the clusters can't mean fifteen times the people running scripts. Every tranche has to be onboarded, configured, and observable fast. The system I built is designed to make that tractable.'
+
+If asked 'how did you measure 15x?': 'It's the capacity target the system has to support, 750 over 50. It's not a benchmark I ran. The claim is that the declarative model scales with the number of clusters, and the script model doesn't.'">
+  <div class="eyebrow"><span class="num">2</span> Background</div>
+  <h2>Why the fleet has to <span class="lo">grow 15×</span></h2>
+  <div class="content">
+    <div class="panel accent frag" data-f="1">
+      <h4>January 2026 · OpenAI × Cerebras</h4>
+      <div class="p"><b>750 MW</b> of low-latency inference compute, coming online in tranches <b>through 2028</b>.</div>
+    </div>
+    <div class="stats c3 frag" data-f="2">
+      <div class="tile warm"><div class="n">~50 MW</div><div class="l">fleet when I started (May 2026)</div></div>
+      <div class="tile"><div class="n">750 MW</div><div class="l">committed through 2028</div></div>
+      <div class="tile good"><div class="n">15×</div><div class="l">scale-up the control plane must absorb</div></div>
+    </div>
+    <div class="rule frag" data-f="3">15× the clusters can't mean <em>15× the people running scripts</em>.</div>
+  </div>
+  <div class="foot"><span class="sec">Background</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 6 · CONTEXT — SCALE ═════════ -->
+<section class="slide" data-sec="Problem" data-time="1:00"
+data-notes="CLICK 1: 'When I started, every app on a cluster was installed by shell.'
+CLICK 2: three numbers: 51,808 lines, 1,614 kubectl calls, only 14 of 46 apps using Helm.
+
+'These are counted from source, not estimated. The orchestration ran from each management node and fanned out over parallel SSH (PSSH and PSCP). Most apps applied raw YAML, so there was no versioned package to point at or roll back to.'">
+  <div class="eyebrow"><span class="num">3</span> Problem</div>
+  <div class="content">
+    <h2 class="frag" data-f="1">Every cluster app was installed by shell:</h2>
     <div class="stats c5 frag" data-f="2">
       <div class="tile"><div class="n">46</div><div class="l">apps at bootstrap</div></div>
       <div class="tile"><div class="n">193</div><div class="l">shell scripts</div></div>
@@ -341,421 +447,710 @@ That last one is the strongest point on the slide and it isn&#39;t written anywh
       <div class="tile"><div class="n">14/46</div><div class="l">use Helm at all</div></div>
     </div>
   </div>
-  <div class="foot"><span class="sec">Context</span><span class="pg"></span></div>
+  <div class="foot"><span class="sec">Problem</span><span class="pg"></span></div>
 </section>
 
-<!-- ═════════ 4 · PROBLEM — WHY IT BREAKS ═════════ -->
-<section class="slide" data-sec="Problem" data-time="1:20"
-data-notes="This is the conceptual point of the section. Take your time on the first bullet — it's the one that matters.
+<!-- ═════════ 7 · ONE GIANT SCRIPT ═════════ -->
+<section class="slide" data-sec="Problem" data-time="1:30"
+data-notes="Make the blast radius concrete.
 
-BULLET 1 — 'The deployment system keeps track of whether each script finished. What it has nowhere is a description of what the cluster is supposed to contain. And because there's no description, there's nothing to compare the real cluster against.'
+'These aren't side apps. This is the cluster's foundation: the CNI (Cilium and Multus), storage (Ceph), the load-balancer VIP (kube-vip), ingress (NGINX, Envoy), certificates, policy (Kyverno), secrets (Akeyless), logging (Fluent Bit), and monitoring. Plus about 20 more. All installed together by one script, in order, built up over five-plus years.'
 
-BULLET 2 — 'So if someone changes something by hand, or a script half-succeeds, or an old version left objects behind, nothing anywhere notices.'
+CLICK: 'So it's order-dependent and all-or-nothing. Every cluster has a slightly different version and configuration, and one script can't handle all of them cleanly. When something failed at scale, finding which step on which cluster broke was the hard part.'
 
-THE TAKEAWAY — say this slowly, it's the whole reason the project exists: 'And that's the part that matters at our size. One cluster, you can hold in your head. Every cluster, across every datacenter, each with its own hand-edited settings file — you can't. The complexity doesn't grow with the number of clusters, it multiplies.'
-
-Then prometheus: 'This is why I picked it — it was the worst case in the tree. A single install wrapped in 123 kubectl calls, driven by 44 template variables and about 26 hand-edited settings.'
-
-If someone asks about PB3 specifically: PB3 orchestrates and schedules these scripts, and it does that part well, at large scale. The gap is that a script is the smallest thing it knows about.">
-  <div class="eyebrow"><span class="num">2</span> Problem</div>
-  <h2>Why that doesn't hold up <span class="lo">at scale</span></h2>
+'The two I migrated myself are highlighted: metrics-server as the pilot, and the full monitoring stack.'">
+  <div class="eyebrow"><span class="num">3</span> Problem</div>
+  <h2>One script installed <span class="lo">the whole foundation</span></h2>
   <div class="content">
-    <ul class="k frag" data-f="1">
-      <li>The system records <b>whether scripts finished</b> — not what the live cluster contains</li>
-      <li>Drift and stale resources may <b>go undetected</b>.</li>
-    </ul>
-    <div class="big frag" data-f="2" style="max-width:50ch">As clusters and applications multiply,<br><em>operational complexity multiplies with them.</em></div>
-    <div class="frag" data-f="3">
-      <div class="panel accent">
-        <h4>prometheus — the worst case in the tree</h4>
-        <div class="stats c3">
-          <div class="tile" style="background:var(--surface-1)"><div class="n">1,364</div><div class="l">lines in one script</div></div>
-          <div class="tile" style="background:var(--surface-1)"><div class="n">123</div><div class="l"><span class="mono">kubectl</span> calls around it</div></div>
-          <div class="tile" style="background:var(--surface-1)"><div class="n">~26</div><div class="l">hand-edited settings</div></div>
-        </div>
-      </div>
+    <div class="chips frag" data-f="1" style="gap:10px">
+      <span class="chip on">metrics-server</span><span class="chip on">Prometheus · Grafana · Alertmanager · Thanos · VictoriaMetrics</span>
+      <span class="chip">Ceph</span><span class="chip">Cilium</span><span class="chip">Multus</span><span class="chip">kube-vip</span>
+      <span class="chip">NGINX</span><span class="chip">Envoy</span><span class="chip">cert-manager</span><span class="chip">Kyverno</span>
+      <span class="chip">Akeyless</span><span class="chip">Fluent Bit</span><span class="chip">+ ~20 more</span>
     </div>
+    <div class="cols c3 frag" data-f="2">
+      <div class="panel warm"><h4>Order-dependent</h4><div class="p">Networking before storage before everything else.</div></div>
+      <div class="panel warm"><h4>All-or-nothing</h4><div class="p">One run for <b>every</b> app, on every cluster.</div></div>
+      <div class="panel warm"><h4>Hard to debug</h4><div class="p">Which step, on <b>which of hundreds</b> of clusters, failed?</div></div>
+    </div>
+    <div class="line frag" data-f="2"><span class="chip on" style="font-size:12px;padding:3px 9px">highlighted</span>&nbsp; = migrated by me</div>
   </div>
   <div class="foot"><span class="sec">Problem</span><span class="pg"></span></div>
 </section>
 
-<!-- ═════════ 5 · SOLUTION — WHAT ARGOCD DOES ═════════ -->
-<section class="slide" data-sec="Solution" data-time="1:20"
-data-notes="This slide starts with only the Scripts box on screen — describe how things work today first.
+<!-- ═════════ 8 · PROBLEM — IMPERATIVE VS DECLARATIVE ═════════ -->
+<section class="slide" data-sec="Problem" data-time="2:00"
+data-notes="The conceptual core. Don't over-explain Kubernetes; spend the time on the failure mode.
 
-'Today, a person runs a program. It changes the cluster directly, and the config for that lives on a machine.'
+LEFT: 'The deploy system tracked whether each script finished. It had no description of what the cluster should contain. Per-cluster settings were a file someone edited by hand on each management node, rendered through two rounds of template substitution. So the script that actually ran didn't exist in any repo. You couldn't review it or preview it.'
 
-CLICK — ArgoCD arrives: 'Here's the alternative. Git says how the cluster should look, and ArgoCD's job is to keep the real thing matching that description. Config lives in review, not on a machine.'
+CLICK, RIGHT: 'The declarative model: Git holds desired state, a controller reconciles continuously, drift is visible.'
 
-CLICK — the rule: 'That's the actual difference. Git holds a description of the cluster itself, not the steps to build it.'">
-  <div class="eyebrow"><span class="num">3</span> Solution</div>
-  <h2>What ArgoCD does <span class="lo">differently</span></h2>
+Then a point worth making out loud: 'Prometheus and Grafana help you debug the apps they monitor. But who debugs the monitoring stack's own deployment? Or things that metrics can't see? Argo CD answers that: every resource is either in sync with Git or it isn't, and it shows you the diff.'
+
+CLICK, the rule.">
+  <div class="eyebrow"><span class="num">3</span> Problem</div>
+  <h2>Imperative scripts <span class="lo">don't scale with the fleet</span></h2>
   <div class="content">
     <div class="ba">
       <div class="side b">
-        <h5>Scripts</h5>
+        <h5>Before · imperative push</h5>
         <ul>
-          <li>A person runs a program</li>
-          <li>It changes the cluster</li>
-          <li>Config lives on a machine</li>
+          <li>System knows <b>scripts finished</b>, not what's running</li>
+          <li>Config hand-edited on each node</li>
+          <li>Rendered twice; the real script is in <b>no repo</b></li>
+          <li>Drift and stale objects go unnoticed</li>
         </ul>
       </div>
       <div class="arrow frag" data-f="1">→</div>
       <div class="side a frag" data-f="1">
-        <h5>ArgoCD</h5>
+        <h5>After · declarative pull</h5>
         <ul>
-          <li>Git is source of truth</li>
-          <li>ArgoCD continuously reconciles</li>
-          <li>Easy to see live state</li>
+          <li>Git holds <b>desired state</b></li>
+          <li>Argo CD continuously reconciles</li>
+          <li>Per-cluster diff is a <b>reviewed file</b></li>
+          <li>Every resource: in sync, or a <b>visible diff</b></li>
         </ul>
       </div>
     </div>
-    <div class="rule frag" data-f="2">Git holds a <em>description of the cluster</em>,<br>not the steps to build it.</div>
+    <div class="rule frag" data-f="2">Onboarding a cluster should be <em>a pull request</em>,<br>not a runbook.</div>
   </div>
-  <div class="foot"><span class="sec">Solution</span><span class="pg"></span></div>
+  <div class="foot"><span class="sec">Problem</span><span class="pg"></span></div>
 </section>
 
-<!-- ═════════ 6 · SOLUTION — ONE CHART, EVERY CLUSTER ═════════ -->
-<section class="slide" data-sec="Solution" data-time="1:10"
-data-notes="This answers 'why does this scale?'
+<!-- ═════════ 9 · APPROACH — ROLE + SEQUENCE ═════════ -->
+<section class="slide" data-sec="Approach" data-time="2:00"
+data-notes="This slide is about ownership and judgment.
 
-Walk the diagram: 'One packaged chart. Combined with a config file per cluster, in git. One generator turns that into a deployment per cluster.'
+ROLE: 'The full-time engineers had to keep the imperative system running, because production depended on it. I was recommended to look into Argo CD, and I became the lead engineer on the GitOps initiative: research, design, and the first migrations.'
 
-Two points to make out loud:
- • 'Config layers — there's a shared base, then a variant, then a per-cluster override. So a cluster's differences are a small file, not a different script.'
- • 'And a cluster opts in by naming a chart version in its own file. So adding a cluster is a pull request. That also means a cluster can't end up running something nobody reviewed.'">
-  <div class="eyebrow"><span class="num">3</span> Solution</div>
-  <h2>One chart, <span class="lo">every app</span></h2>
+GROUNDWORK: 'I started having never touched Kubernetes, Helm, or Argo CD.'
+PILOT: 'I migrated metrics-server first on purpose. It's nearly an upstream chart as-is, so it was a cheap way to learn the loop: package, publish, sync, health, deploy to many clusters.'
+TARGET: 'Then the worst case in the tree: the observability stack. One 1,364-line script, 123 kubectl calls, about 26 hand-edited settings.'
+
+'Why observability first? It's how you know new compute is actually healthy. And as the hardest app, it forced patterns that generalize to the other 40-plus.'">
+  <div class="eyebrow"><span class="num">4</span> Approach</div>
+  <h2>Cheap pilot, <span class="lo">then the hardest app</span></h2>
+  <div class="content">
+    <div class="panel accent frag" data-f="1">
+      <h4>My role</h4>
+      <div class="p"><b>Lead engineer on the GitOps initiative</b> while the full-time team kept the legacy system running for production.</div>
+    </div>
+    <div class="prog">
+      <div class="step s1 frag" data-f="2">
+        <div class="tag">Groundwork</div>
+        <h5>Learn the model</h5>
+        <p>Kubernetes, Helm, Argo CD, ApplicationSets, all from zero.</p>
+      </div>
+      <div class="to frag" data-f="3">→</div>
+      <div class="step s2 frag" data-f="3">
+        <div class="tag">Pilot</div>
+        <h5>metrics-server</h5>
+        <p>Simplest app in the tree. Learn package → publish → sync → health.</p>
+      </div>
+      <div class="to frag" data-f="4">→</div>
+      <div class="step s3 frag" data-f="4">
+        <div class="tag">Target</div>
+        <h5>Observability stack</h5>
+        <p>Worst case: 1,364-line script, 123 <span class="mono">kubectl</span> calls, ~26 settings.</p>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="sec">Approach</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 10 · SYSTEM OVERVIEW ★ ═════════ -->
+<section class="slide" data-sec="System design" data-time="3:00"
+data-notes="★ THE SYSTEM DESIGN SLIDE. Walk left to right, one zone per click. Take your time.
+
+GIT: 'One repo. Each environment is a branch: dev, stage, and main for prod.'
+
+AWS: 'The control plane lives on AWS EC2. There's one Argo CD hub per environment, plus the central JFrog Artifactory, our source of truth for charts and images. Terraform handles cluster registration and provisioning.'
+
+DATACENTER: 'In each datacenter, every workload cluster runs on on-prem management nodes with its own Argo CD agent, application controller, and repo-server. The agent dials out to its hub over gRPC on HTTP/2. Application specs flow down, status flows up, and reconciliation happens locally.'
+
+'Clusters have no Git access. Only the hubs read Git: the ApplicationSet on the hub reads the branch and stamps each cluster's values into its Application. The agent delivers that spec, and the cluster's local repo-server pulls the Helm chart as an OCI artifact from the JFrog Edge mirror in its own datacenter.'
+
+'The key property: clusters never accept an inbound connection and never reach Git or the internet. The hub doesn't hold credentials for any cluster's Kubernetes API.'
+
+If asked how artifacts reach the edge: 'I didn't own the replication setup. The edge only receives: artifacts flow in from central and nothing flows back. The invariant that matters is that the clusters themselves only ever talk outward, to the hub and to their local edge.'
+
+[NEIL: confirm values are inlined into the Application by the hub. If the Applications pulled values from Git directly, clusters would need Git access.]">
+  <div class="eyebrow"><span class="num">5</span> System design</div>
+  <h2>The whole system <span class="lo">on one page</span></h2>
+  <div class="content">
+    <div class="sys">
+      <div class="zone git frag" data-f="1">
+        <div class="zl">Git · read only by hubs</div>
+        <div class="node cool"><b>dev</b><span>branch</span></div>
+        <div class="node cool"><b>stage</b><span>branch</span></div>
+        <div class="node cool"><b>main</b><span>branch = prod</span></div>
+      </div>
+      <div class="link frag" data-f="2">
+        <div><span class="ar">→</span>each hub watches its branch</div>
+      </div>
+      <div class="zone aws frag" data-f="2">
+        <div class="zl">AWS EC2 · control plane</div>
+        <div class="node hi"><b>Argo CD hub × 3</b><span>dev · stage · prod</span></div>
+        <div class="node"><b>JFrog Artifactory</b><span>central charts + images</span></div>
+        <div class="node"><b>Terraform</b><span>cluster registration</span></div>
+      </div>
+      <div class="link frag" data-f="3">
+        <div><span class="ar">⇄</span>agent dials out<br>gRPC / HTTP2<br>app specs ↓ status ↑</div>
+        <div><span class="ar">↘</span>artifacts replicate<br>to edge</div>
+      </div>
+      <div class="zone dc frag" data-f="3">
+        <div class="zl">Datacenter × N · on-prem</div>
+        <div class="node good"><b>Workload cluster</b><span>K8s on mgmt nodes → CS-3s</span></div>
+        <div class="node good"><b>Argo CD agent</b><span>local controller + repo-server</span></div>
+        <div class="node good"><b>JFrog Edge</b><span>OCI charts + images</span></div>
+      </div>
+    </div>
+    <div class="rule frag" data-f="4">Clusters never accept inbound connections <em>and never touch Git</em>.<br>Specs arrive via the agent; artifacts from the local edge.</div>
+  </div>
+  <div class="foot"><span class="sec">System design</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 11 · HUB-SPOKE VS AGENT ═════════ -->
+<section class="slide" data-sec="System design" data-time="2:30"
+data-notes="A real architecture tradeoff, so present it as one.
+
+LEFT: 'Classic Argo CD is hub-and-spoke. One central controller holds a kubeconfig for every cluster, connects directly to each cluster's API server, and does all the watching, diffing, and syncing centrally.'
+
+CLICK, RIGHT: 'The Argo CD Agent model flips it. Each workload cluster runs its own controller plus an agent. The agent opens the connection to the hub, the hub's component is called the principal, and reconciliation happens locally.'
+
+CLICK, why we chose it (one line each):
+ • Scalability: reconciliation is spread across clusters instead of all on the hub.
+ • Fault tolerance: if the hub goes down, clusters keep reconciling against what they last received.
+ • Security: the hub holds no cluster API credentials, and connections are outbound-only.
+ • Latency: no cross-region Kubernetes API calls.
+ • No bottleneck: watching and caching are distributed.
+
+CLICK, the cost: 'It isn't free. Every cluster now runs another component that we have to deploy, upgrade, and monitor. We judged that worth it for hundreds of datacenter clusters that can't accept inbound connections.'">
+  <div class="eyebrow"><span class="num">5</span> System design</div>
+  <h2>Why Argo CD <span class="lo">agent mode</span></h2>
+  <div class="content">
+    <div class="ba">
+      <div class="side b">
+        <h5>Classic hub-and-spoke</h5>
+        <ul>
+          <li>One central controller does <b>all</b> reconciliation</li>
+          <li>Hub holds API credentials for <b>every</b> cluster</li>
+          <li>Hub must reach <b>into</b> each cluster</li>
+          <li>Hub down → whole fleet stops reconciling</li>
+        </ul>
+      </div>
+      <div class="arrow frag" data-f="1">→</div>
+      <div class="side a frag" data-f="1">
+        <h5>Agent (what we chose)</h5>
+        <ul>
+          <li>Each cluster reconciles <b>locally</b></li>
+          <li>Agent dials out; <b>no inbound</b>, no stored kubeconfigs</li>
+          <li>Hub down → clusters keep converging</li>
+          <li>Watch and cache load distributed</li>
+        </ul>
+      </div>
+    </div>
+    <div class="cols c2u frag" data-f="2">
+      <div class="chips" style="align-content:center"><span class="chip on">Scalability</span><span class="chip on">Fault tolerance</span><span class="chip on">Security</span><span class="chip on">Lower latency</span><span class="chip on">No hub bottleneck</span></div>
+      <div class="panel warm frag" data-f="3"><h4>The cost</h4><div class="p">One more component per cluster to deploy, upgrade, and monitor.</div></div>
+    </div>
+  </div>
+  <div class="foot"><span class="sec">System design</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 12 · ENVIRONMENTS ═════════ -->
+<section class="slide" data-sec="System design" data-time="2:00"
+data-notes="'Each environment is fully isolated: its own branch, its own Argo CD instance, its own clusters. The dev Argo instance only knows about dev clusters and only reads the dev branch. So a change to an ApplicationSet or a CRD in dev physically cannot reach prod. There's no label or selector to get wrong.'
+
+CLICK, the honest tradeoff: 'Branch-per-environment is debated in the GitOps community. Branches can drift, and promotion becomes merges that need discipline. Folders-per-environment on one branch makes diffs easier. We chose branches because combined with separate Argo instances it gives hard isolation, and environment promotion maps cleanly onto a PR. The cost is merge hygiene.'">
+  <div class="eyebrow"><span class="num">5</span> System design</div>
+  <h2>Three environments, <span class="lo">hard-isolated</span></h2>
   <div class="content">
     <div class="arch">
-      <div class="lane frag" data-f="1"><div class="lbl">One chart</div>
-        <div class="row"><div class="node hi"><b>workload-monitoring</b><span>published, versioned</span></div></div></div>
-      <div class="lane frag" data-f="2"><div class="lbl">× config</div>
+      <div class="lane frag" data-f="1"><div class="lbl">Dev</div>
+        <div class="row"><div class="node cool"><b>dev</b><span>branch</span></div><span class="ra">→</span><div class="node hi"><b>Argo CD · dev</b><span>own instance</span></div><span class="ra">→</span><div class="node good"><b>dev clusters</b><span>test-heavy</span></div></div></div>
+      <div class="lane frag" data-f="1"><div class="lbl">Stage</div>
+        <div class="row"><div class="node cool"><b>stage</b><span>branch</span></div><span class="ra">→</span><div class="node hi"><b>Argo CD · stage</b><span>own instance</span></div><span class="ra">→</span><div class="node good"><b>staging clusters</b><span>production-like</span></div></div></div>
+      <div class="lane frag" data-f="1"><div class="lbl">Prod</div>
+        <div class="row"><div class="node cool"><b>main</b><span>branch</span></div><span class="ra">→</span><div class="node hi"><b>Argo CD · prod</b><span>own instance</span></div><span class="ra">→</span><div class="node good"><b>production fleet</b><span>hundreds of clusters</span></div></div></div>
+    </div>
+    <div class="cols c2 frag" data-f="2">
+      <div class="panel accent"><h4>Why</h4><div class="p">A dev ApplicationSet or CRD change <b>cannot reach prod</b>. No selector to get wrong.</div></div>
+      <div class="panel warm"><h4>Tradeoff</h4><div class="p">Branches can drift; promotion needs <b>merge discipline</b>.</div></div>
+    </div>
+  </div>
+  <div class="foot"><span class="sec">System design</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 13 · CHANGE FLOW ═════════ -->
+<section class="slide" data-sec="System design" data-time="2:00"
+data-notes="Answer the question 'how does an engineer actually change a cluster?' Walk through it as a story: 'Say I need to bump the monitoring chart version.'
+
+1. 'I open a PR against the dev branch: a new chart version, or a values change.'
+2. 'A reviewer looks at an actual diff of desired state, not a script.'
+3. 'Merged, the dev Argo instance syncs the dev clusters. I check that Argo shows Synced and Healthy and that the dashboards look right.'
+4. 'Then a PR from dev into stage. The stage instance syncs the production-like clusters.'
+5. 'Then stage into main, with reviewer approval.'
+6. 'The prod instance rolls it out across the fleet in waves. Argo health plus our alerts tell us it worked.'
+
+'So every change that reaches prod is a reviewed diff that has already run twice.'">
+  <div class="eyebrow"><span class="num">5</span> System design</div>
+  <h2>How a change <span class="lo">reaches a cluster</span></h2>
+  <div class="content">
+    <div class="flow">
+      <div class="fstep frag" data-f="1"><div class="fn">1 · Edit</div><b>PR to <span class="mono">dev</span></b><p>Bump chart version or values.</p></div>
+      <div class="fstep frag" data-f="2"><div class="fn">2 · Review</div><b>Diff of desired state</b><p>Not a script, a reviewable diff.</p></div>
+      <div class="fstep ac frag" data-f="3"><div class="fn">3 · Dev</div><b>Dev Argo syncs</b><p>Synced / Healthy + dashboards on dev clusters.</p></div>
+      <div class="fstep ac frag" data-f="4"><div class="fn">4 · Stage</div><b>PR <span class="mono">dev → stage</span></b><p>Runs on production-like clusters.</p></div>
+      <div class="fstep gd frag" data-f="5"><div class="fn">5 · Approve</div><b>PR <span class="mono">stage → main</span></b><p>Reviewer approval required.</p></div>
+      <div class="fstep gd frag" data-f="6"><div class="fn">6 · Prod</div><b>Rollout in waves</b><p>Argo health + alerts confirm it.</p></div>
+    </div>
+    <div class="rule frag" data-f="7">Every change in prod is a <em>reviewed diff</em><br>that has already run twice.</div>
+  </div>
+  <div class="foot"><span class="sec">System design</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 14 · BOOTSTRAP: ROOT APPS + SELF-MANAGEMENT ═════════ -->
+<section class="slide" data-sec="System design" data-time="2:00"
+data-notes="Two things I scoped and built as MVPs.
+
+LEFT, ROOT APP-OF-APPS: 'Even with Argo, someone still had to kubectl apply each new ApplicationSet by hand. So I built a root app per environment that watches its branch for ApplicationSets. Adding an app to the fleet is now just committing an ApplicationSet. The prod root app watches main, the stage root app watches stage, and so on.'
+
+RIGHT, ARGO MANAGES ITSELF: 'Argo CD is itself deployed as an Argo Application. Upgrading Argo, scaling its controllers, changing resource limits or security settings all become Git commits. The risk is obvious: a bad commit can break the very thing that applies fixes. So there has to be a documented break-glass path, a manual Helm or kubectl recovery outside Argo.'
+
+CLICK, the rule: 'From an empty cluster, you install Argo and apply the root app once. Everything after that is a commit.'">
+  <div class="eyebrow"><span class="num">5</span> System design</div>
+  <h2>GitOps <span class="lo">all the way down</span></h2>
+  <div class="content">
+    <div class="cols c2">
+      <div class="panel cool frag" data-f="1">
+        <h4>Root app-of-apps · one per environment</h4>
+        <div class="schema" style="margin:4px 0 10px">
+          <span>root-dev &nbsp;&nbsp;<i>→ watches</i> dev:/appsets/*</span>
+          <span>root-stage <i>→ watches</i> stage:/appsets/*</span>
+          <span>root-prod &nbsp;<i>→ watches</i> main:/appsets/*</span>
+        </div>
+        <div class="p">Adding an app = <b>committing an ApplicationSet</b>. No more manual applies.</div>
+      </div>
+      <div class="panel cool frag" data-f="2">
+        <h4>Argo CD manages itself</h4>
+        <ul class="k s" style="margin:4px 0 10px">
+          <li>Upgrades, controller scaling, limits, security config</li>
+          <li>All as reviewed commits</li>
+        </ul>
+        <div class="p"><b>Risk:</b> a bad commit can break the fixer. → documented <b>break-glass</b> manual recovery.</div>
+      </div>
+    </div>
+    <div class="rule frag" data-f="3">Install Argo, apply the root app <em>once</em>.<br>Everything after that is a commit.</div>
+  </div>
+  <div class="foot"><span class="sec">System design</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 15 · ARTIFACT SUPPLY CHAIN ═════════ -->
+<section class="slide" data-sec="System design" data-time="1:30"
+data-notes="'Clusters can't pull from the internet, so every chart and image has a path.'
+
+Walk it: 'Charts and images are published to a central JFrog Artifactory, the single source of truth. Each datacenter has a JFrog Edge mirror that only receives: artifacts replicate in, and nothing goes out. Clusters pull from their local edge.'
+
+CLICK: 'Charts are built and pushed as OCI artifacts, the same as images, so one registry path serves both.' (If asked why edge mirrors: latency, WAN bandwidth, resilience to WAN outages, one source of truth.)
+
+CLICK: 'Every version is pinned. I also laid groundwork for Renovate, which opens PRs automatically when an upstream chart or image has a new version. Combined with the env branches, dependency updates become normal reviewed PRs.'">
+  <div class="eyebrow"><span class="num">5</span> System design</div>
+  <h2>Getting artifacts <span class="lo">past the air gap</span></h2>
+  <div class="content">
+    <div class="arch">
+      <div class="lane frag" data-f="1"><div class="lbl">Central · AWS</div>
+        <div class="row"><div class="node hi"><b>JFrog Artifactory</b><span>source of truth · pinned versions</span></div></div></div>
+      <div class="down frag" data-f="1">↓ &nbsp;replicate in (edge only receives)</div>
+      <div class="lane frag" data-f="1"><div class="lbl">Edge · per DC</div>
+        <div class="row"><div class="node cool"><b>JFrog Edge · DC 1</b><span>mirror</span></div><div class="node cool"><b>JFrog Edge · DC 2</b><span>mirror</span></div><div class="node cool"><b>… DC N</b><span>mirror</span></div></div></div>
+      <div class="down frag" data-f="1">↓ &nbsp;pull locally</div>
+      <div class="lane frag" data-f="1"><div class="lbl">Clusters</div>
+        <div class="row"><div class="node good"><b>workload clusters</b><span>never touch the internet</span></div></div></div>
+    </div>
+    <div class="cols c2 frag" data-f="2">
+      <div class="panel accent"><h4>Everything is OCI</h4><div class="p">Helm charts <b>and</b> images, served from the local edge.</div></div>
+      <div class="panel cool frag" data-f="3"><h4>Groundwork: Renovate</h4><div class="p">Upstream updates arrive as <b>automated PRs</b>, then flow through dev → stage → prod.</div></div>
+    </div>
+  </div>
+  <div class="foot"><span class="sec">System design</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 16 · ONE CHART × CONFIG ═════════ -->
+<section class="slide" data-sec="System design" data-time="1:30"
+data-notes="This answers 'how does one app definition reach hundreds of different clusters?'
+
+ • 'One versioned chart.'
+ • 'Layered values in Git: shared base, a variant like HA, then a small per-cluster override. A cluster opts in by pinning a chart version in its own file.'
+ • 'An ApplicationSet generator turns that into one Application per cluster.'
+
+CLICK: 'So a cluster's differences are a small reviewed file, not a different script. And when we cut over, about 258 objects already running were adopted in place, not recreated. No downtime for the thing we were migrating.'">
+  <div class="eyebrow"><span class="num">5</span> System design</div>
+  <h2>One chart × per-cluster config <span class="lo">→ N clusters</span></h2>
+  <div class="content">
+    <div class="arch">
+      <div class="lane frag" data-f="1"><div class="lbl">Artifact</div>
+        <div class="row"><div class="node hi"><b>workload-monitoring</b><span>Helm chart · versioned · Artifactory</span></div></div></div>
+      <div class="lane frag" data-f="2"><div class="lbl">Git config</div>
         <div class="row">
           <div class="node cool"><b>Base</b><span>shared defaults</span></div>
           <div class="node cool"><b>Variant</b><span>ha.yaml</span></div>
           <div class="node cool"><b>Per cluster</b><span>cluster/&lt;name&gt;.yaml</span></div>
-          <div class="node cool"><b>Opt-in</b><span>names a version</span></div>
+          <div class="node cool"><b>Opt-in</b><span>pins a chart version</span></div>
         </div></div>
-      <div class="down frag" data-f="3">↓ &nbsp;one generator</div>
-      <div class="lane frag" data-f="3"><div class="lbl">→ N clusters</div>
+      <div class="down frag" data-f="3">↓ &nbsp;ApplicationSet generator</div>
+      <div class="lane frag" data-f="3"><div class="lbl">Fleet</div>
         <div class="row">
           <div class="node good"><b>cluster A</b><span>Synced / Healthy</span></div>
           <div class="node good"><b>cluster B</b><span>Synced / Healthy</span></div>
           <div class="node good"><b>cluster N…</b><span>same chart</span></div>
         </div></div>
     </div>
-    <div class="rule frag" data-f="4">A cluster's differences are <em>a file in git</em>,<br>not a different script.</div>
-  </div>
-  <div class="foot"><span class="sec">Solution</span><span class="pg"></span></div>
-</section>
-
-<!-- ═════════ 7 · SOLUTION — GROUNDWORK + PILOT ═════════ -->
-<section class="slide" data-sec="Solution" data-time="1:15"
-data-notes="Emphasise that both of these came BEFORE the hard app. This is what made the work reusable rather than one-off.
-
-THE BASICS: 'I started from zero, so the first stretch was just building the foundation — what Kubernetes actually is, how we set up Argo, ApplicationSets, and root apps. That's the vocabulary everything else in this talk is built on.'
-
-THE PILOT: 'Then I migrated metrics-server first, on purpose, because it was one of the simplest apps in the tree — an upstream chart used almost as-is. It was the cheap place to learn the surface-level patterns: packaging, publishing, how sync and health checks actually behave, and what it looks like deploying the same thing to many clusters. That's where I became comfortable, before taking on prometheus.'">
-  <div class="eyebrow"><span class="num">3</span> Solution</div>
-  <h2>Groundwork <span class="lo">before the hard app</span></h2>
-  <div class="content">
-    <div class="cols c2">
-      <div class="frag" data-f="1">
-        <div class="panel cool">
-          <h4>Investigated first</h4>
-          <ul class="k s">
-            <li>What is Kubernetes?</li>
-            <li>How do we set up Argo?</li>
-            <li>ApplicationSets</li>
-            <li>Root Apps</li>
-          </ul>
-        </div>
-      </div>
-      <div class="frag" data-f="2">
-        <div class="panel cool">
-          <h4>Then migrated the simplest app first</h4>
-          <ul class="k s">
-            <li>Learned the loop cheaply</li>
-            <li>Surfaced base patterns</li>
-            <li>Deployed to many clusters</li>
-            <li>Became comfortable before Prometheus</li>
-          </ul>
-        </div>
-      </div>
+    <div class="cols c2 frag" data-f="4">
+      <div class="panel accent"><h4>A cluster's differences</h4><div class="p">Are <b>a small file in Git</b>, not a different script.</div></div>
+      <div class="panel accent"><h4>Cutover</h4><div class="p"><b>~258 live objects adopted in place</b>, not recreated.</div></div>
     </div>
   </div>
-  <div class="foot"><span class="sec">Solution</span><span class="pg"></span></div>
+  <div class="foot"><span class="sec">System design</span><span class="pg"></span></div>
 </section>
 
-<!-- ═════════ 8 · SOLUTION — ARCHITECTURE ═════════ -->
-<section class="slide" data-sec="Solution" data-time="1:40"
-data-notes="Walk the diagram top to bottom as it builds.
+<!-- ═════════ 17 · OBSERVABILITY CHART ARCHITECTURE ═════════ -->
+<section class="slide" data-sec="Observability" data-time="1:30"
+data-notes="Walk the build as it appears.
 
- • SOURCES — 'The upstream monitoring chart, pinned to a specific version. Plus all of our own additions — exporters, alert rules, dashboards — as part of the same chart rather than bolted on afterwards.'
- • ONE CHART — 'A build turns that into a single packaged chart, published to our internal registry.'
- • THREE SOURCES — 'ArgoCD combines three things: that chart, the per-cluster config from git, and a small set of scripts that run before and after installation.'
- • ON CLUSTER — 'Which lands three deployments: the monitoring stack itself, the CRD operator kept separate on purpose, and Thanos.'
+ • SOURCES: 'The upstream monitoring chart pinned to an exact version, plus our own exporters, alert rules, and dashboards folded into the same chart, not bolted on afterwards.'
+ • BUILD: 'One packaged chart, published to Artifactory and mirrored to the edges. The dev registry is wired up; production publishing is deliberately not, so nothing can accidentally publish to prod.'
+ • ARGO COMBINES: 'Argo CD combines three inputs: the pinned chart, per-cluster values from Git, and a small set of sync hooks.'
+ • ON CLUSTER: 'The monitoring stack with 263 objects, the CRD operator kept separate on purpose, and Thanos as the query layer.'
 
-Then the release approach: 'I shipped this as a numbered series of small releases. Each one went out on its own and got tested on a real cluster before the next one started — so when something broke there was only one thing it could have been.'">
-  <div class="eyebrow"><span class="num">3</span> Solution</div>
-  <h2>prometheus: the architecture</h2>
+[NEIL: name the upstream chart, e.g. kube-prometheus-stack, if that's what it was.]">
+  <div class="eyebrow"><span class="num">6</span> Observability</div>
+  <h2>The observability stack, <span class="lo">as one chart</span></h2>
   <div class="content">
     <div class="arch">
       <div class="lane frag" data-f="1"><div class="lbl">Sources</div>
         <div class="row">
           <div class="node"><b>Upstream chart</b><span>pinned version</span></div>
-          <div class="node"><b>Our additions</b><span>exporters · rules · dashboards</span></div>
+          <div class="node"><b>Our additions</b><span>6 exporters · 342 rules · 92 dashboards</span></div>
         </div></div>
-      <div class="down frag" data-f="2">↓ &nbsp;build</div>
-      <div class="lane frag" data-f="2"><div class="lbl">One chart</div>
-        <div class="row"><div class="node hi"><b>workload-monitoring</b><span>→ internal registry</span></div></div></div>
-      <div class="down frag" data-f="3">↓ &nbsp;ArgoCD combines</div>
+      <div class="down frag" data-f="2">↓ &nbsp;build → Artifactory → edge</div>
+      <div class="lane frag" data-f="2"><div class="lbl">Artifact</div>
+        <div class="row"><div class="node hi"><b>workload-monitoring</b><span>dev publishing wired · prod deliberately not</span></div></div></div>
+      <div class="down frag" data-f="3">↓ &nbsp;Argo CD combines</div>
       <div class="lane frag" data-f="3"><div class="lbl">3 inputs</div>
         <div class="row">
           <div class="node cool"><b>Chart</b><span>version-pinned</span></div>
-          <div class="node cool"><b>Config</b><span>from git</span></div>
-          <div class="node cool"><b>Setup scripts</b><span>before / after</span></div>
+          <div class="node cool"><b>Values</b><span>from Git</span></div>
+          <div class="node cool"><b>Sync hooks</b><span>PreSync / PostSync</span></div>
         </div></div>
       <div class="down frag" data-f="4">↓</div>
       <div class="lane frag" data-f="4"><div class="lbl">On cluster</div>
         <div class="row">
-          <div class="node good"><b>monitoring</b><span>263 objects</span></div>
-          <div class="node good"><b>CRD operator</b><span>kept separate</span></div>
+          <div class="node good"><b>Prometheus · Grafana · Alertmanager</b><span>263 objects</span></div>
+          <div class="node good"><b>CRD operator</b><span>separate app</span></div>
           <div class="node good"><b>Thanos</b><span>query layer</span></div>
         </div></div>
     </div>
-    <div class="rule frag" data-f="5">Shipped as small numbered releases —<br>each tested on a <em>real cluster</em> before the next.</div>
   </div>
-  <div class="foot"><span class="sec">Solution</span><span class="pg"></span></div>
+  <div class="foot"><span class="sec">Observability</span><span class="pg"></span></div>
 </section>
 
-<!-- ═════════ 9 · SOLUTION — WHY IT WAS HARD ═════════ -->
-<section class="slide" data-sec="Solution" data-time="1:30"
-data-notes="Don't read every number — pick two. '263 objects to get right, where the upstream chart alone accounts for 131. 92 dashboards, generated at build time rather than checked in.'
+<!-- ═════════ 18 · METRICS STORAGE ═════════ -->
+<section class="slide" data-sec="Observability" data-time="2:00"
+data-notes="TOP, the storage path: 'Each cluster's Prometheus keeps its own local time-series database. Thanos gives us a global query and aggregation layer across clusters, and that migration was done. VictoriaMetrics, for cheaper and more scalable long-term storage, was in progress at the end of the summer. It was blocked on the storage layer underneath, which is Ceph.'
 
-Then four things that each had to be solved on their own, one click each:
+CLICK, the hook (let them ask why): 'That raised a real storage decision. CephFS is a shared filesystem many pods can mount at once, but every operation goes through its Metadata Servers, which become a bottleneck at large scale. RBD gives each workload its own block volume: no metadata server, better isolation. Each Prometheus instance owns its own TSDB and never shares it, so RBD is the better fit for active ingestion.'
 
- 1. ACCESS CONTROL — 'Grafana folder permissions and locked dashboards had to work the same way they did before — the wrong ACL here means the wrong people can see something they shouldn't.'
-
- 2. ROUTING — 'External access moved onto the newer Gateway API instead of the old Ingress, and that changed how every URL into this app resolves.'
-
- 3. HOOKS / JOBS — 'A handful of steps only make sense before or after a sync — retaining a PV, waiting for the operator to report healthy, checking a credential exists. Each one runs with permissions that exist only for the seconds it's running.'
-
- 4. DEPENDENCIES — 'The shared CRDs are owned by a separate app on purpose, and Thanos has to exist before this chart's default dashboard datasource will resolve. Get the order wrong and the app looks healthy while pointing at nothing.'">
-  <div class="eyebrow"><span class="num">3</span> Solution</div>
-  <h2>Why prometheus <span class="lo">was hard</span></h2>
-  <div class="content top">
-    <div class="stats c5 frag" data-f="1">
-      <div class="tile"><div class="n">263</div><div class="l">objects to get right</div></div>
-      <div class="tile"><div class="n">342</div><div class="l">alerts + rules</div></div>
-      <div class="tile"><div class="n">92</div><div class="l">dashboards</div></div>
-      <div class="tile"><div class="n">6</div><div class="l">exporters to reproduce</div></div>
-      <div class="tile"><div class="n">8</div><div class="l">secrets &amp; certs referenced</div></div>
+CLICK, rule: 'For long-term retention at very large scale, object storage beats both. That's where Thanos and VictoriaMetrics blocks should live.'">
+  <div class="eyebrow"><span class="num">6</span> Observability</div>
+  <h2>Where the metrics <span class="lo">actually live</span></h2>
+  <div class="content">
+    <div class="prog frag" data-f="1">
+      <div class="step s3"><div class="tag">Per cluster</div><h5>Prometheus</h5><p>Local TSDB, scrapes everything on-cluster.</p><div class="mark">✓ declarative</div></div>
+      <div class="to">→</div>
+      <div class="step s3"><div class="tag">Fleet-wide</div><h5>Thanos</h5><p>Global query and aggregation across clusters.</p><div class="mark">✓ migrated</div></div>
+      <div class="to">→</div>
+      <div class="step s2"><div class="tag">Long-term</div><h5>VictoriaMetrics</h5><p>Cheaper, scalable retention.</p><div class="mark">◐ in progress: blocked on Ceph</div></div>
     </div>
-    <div class="cols c4">
-      <div class="panel warm frag" data-f="2">
-        <h4>Access Control</h4>
-        <div class="p">Folder permissions, locked dashboards</div>
-      </div>
-      <div class="panel warm frag" data-f="3">
-        <h4>Routing</h4>
-        <div class="p">Moved onto the newer Gateway API</div>
-      </div>
-      <div class="panel warm frag" data-f="4">
-        <h4>Hooks / Jobs</h4>
-        <div class="p">Run before/after a sync</div>
-      </div>
-      <div class="panel warm frag" data-f="5">
-        <h4>Dependencies</h4>
-        <div class="p">CRDs and Thanos owned by other apps</div>
-      </div>
-    </div>
+    <div class="panel warm frag" data-f="2"><h4>A storage decision underneath</h4><div class="p">Prometheus TSDBs on <b>Ceph RBD</b> (block), not <b>CephFS</b> (shared filesystem).</div></div>
+    <div class="rule frag" data-f="3" style="font-size:19px">Active ingestion → <em>block storage</em>. Long-term retention → <em>object storage</em>.</div>
   </div>
-  <div class="foot"><span class="sec">Solution</span><span class="pg"></span></div>
+  <div class="foot"><span class="sec">Observability</span><span class="pg"></span></div>
 </section>
 
-<!-- ═════════ 10 · SOLUTION — CONVERGENCE ★ ═════════ -->
-<section class="slide" data-sec="Solution" data-time="1:30"
-data-notes="★ THE STRONGEST SLIDE. Land it slowly, three clicks.
+<!-- ═════════ 19 · WHO MONITORS THE MONITORING ═════════ -->
+<section class="slide" data-sec="Observability" data-time="1:30"
+data-notes="A good point to make with conviction because it's a little counterintuitive.
 
-Set up WHO the two installers are, because nobody will infer it: 'There are two ways this app gets installed. ArgoCD, from git, on clusters we've already migrated. And the bootstrap installer, which runs when a brand-new cluster gets built for the first time. Both have to keep existing — you can't use ArgoCD to install a cluster that doesn't have Kubernetes running yet.'
+'Monitoring tells you when an app is unhealthy. But if the monitoring stack's own deployment is broken, it can't tell you. That's a blind spot.'
 
-Then the problem: 'So for most of the summer there were two separate implementations that had to behave identically, forever. A reviewer called that out directly — I was sharing files between them, not sharing the actual chart.'
+CLICK: 'Argo CD covers it. Every object is either in sync with Git or it isn't, and Argo shows you exactly which resource differs and why the sync failed.'
 
- • CLICK 1 — 'At the start there was one script and no ArgoCD.'
- • CLICK 2 — 'During the migration both existed, each building the app its own way. That's a permanent maintenance cost, and they can quietly stop matching.'
- • CLICK 3 — 'And last week that closed. The bootstrap installer now installs the same chart ArgoCD does, and the old script was deleted.'
+CLICK: 'During the migration the stack broke constantly, which is expected when you're rebuilding 263 objects. But every breakage showed up as a specific out-of-sync resource with a diff. I never had to dig through a 1,364-line script's logs on a management node.'
 
-Then say the honest cost out loud, even though it's not on the slide: 'That had a consequence. Twelve of my tests worked by running both versions and comparing them — and there's no second version left. So they were deleted too, on purpose. A test that loses the thing it was comparing against doesn't get weaker; it just starts confirming whatever my own code already does, which is the exact problem those tests existed to catch.'">
-  <div class="eyebrow"><span class="num">3</span> Solution</div>
-  <h2>ArgoCD and the installer <span class="lo">now share one chart</span></h2>
+CLICK: 'That's where the 2x comes from: time to acknowledge issues with the observability stack's own deployment, because the failure is pinpointed instead of discovered.'
+
+[NEIL: if you have before/after numbers for time-to-acknowledge, say them.]">
+  <div class="eyebrow"><span class="num">6</span> Observability</div>
+  <h2>Who monitors <span class="lo">the monitoring stack?</span></h2>
+  <div class="content">
+    <div class="ba">
+      <div class="side b frag" data-f="1">
+        <h5>Before</h5>
+        <ul>
+          <li>Stack's own deploy breaks → <b>silent</b></li>
+          <li>Debug = read script logs on a node</li>
+          <li>Which of hundreds of clusters? Unclear</li>
+        </ul>
+      </div>
+      <div class="arrow frag" data-f="2">→</div>
+      <div class="side a frag" data-f="2">
+        <h5>With Argo CD</h5>
+        <ul>
+          <li>Every object: <b>Synced</b> or a visible <b>diff</b></li>
+          <li>Sync errors name the exact resource</li>
+          <li>Fleet view: which clusters are Degraded</li>
+        </ul>
+      </div>
+    </div>
+    <div class="cols c2v frag" data-f="3">
+      <div class="tile good"><div class="n">&gt;2×</div><div class="l">faster time-to-acknowledge for observability-stack issues</div></div>
+      <div class="panel accent"><h4>During migration</h4><div class="p">The stack broke constantly, and <b>every break was a pinpointed diff</b>.</div></div>
+    </div>
+  </div>
+  <div class="foot"><span class="sec">Observability</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 20 · DECISIONS ★ ═════════ -->
+<section class="slide" data-sec="Decisions" data-time="2:30"
+data-notes="★ THE TECHNICAL HEART. The why is deliberately NOT on the slide, so the interviewer asks. Pick one or two to open, then let them choose. Reasons below (full depth in prep.md).
+
+ • CRDs: 'Helm installs CRDs from the crds/ directory but never upgrades or deletes them. And deleting a CRD deletes every custom resource of that type. So CRD lifecycle can't be tied to the app's lifecycle. They're owned by a separate Argo app.'
+ • ORDERING: 'Grafana's default datasource points at Thanos. Get the order wrong and the app reports Healthy while pointing at nothing.'
+ • HOOKS: 'The scripts made decisions at runtime. Some steps really are imperative: retain a PV before sync, wait for the operator after, check a credential exists. Each runs as a hook Job with RBAC that exists only while the Job runs.'
+ • SECRETS: 'The chart reads credentials, never creates them. Secrets stay out of Git; provisioning is a separate concern.'
+ • DASHBOARDS: '92 dashboards generated at build time instead of checked-in JSON.'
+ • ROUTING: 'Moved from Ingress to Gateway API, which changed how every URL into the app resolves, while Grafana folder permissions had to behave identically.'">
+  <div class="eyebrow"><span class="num">7</span> Decisions</div>
+  <h2>The hard calls</h2>
+  <div class="content">
+    <table class="t" style="max-width:860px">
+      <tr><th>Problem</th><th>Decision</th></tr>
+      <tr class="frag" data-f="1"><td class="k">CRD lifecycle</td><td class="a">Operator CRDs in their own Argo app</td></tr>
+      <tr class="frag" data-f="2"><td class="k">Ordering</td><td class="a">Explicit cross-app dependencies</td></tr>
+      <tr class="frag" data-f="3"><td class="k">Runtime decisions</td><td class="a">PreSync / PostSync hook Jobs</td></tr>
+      <tr class="frag" data-f="4"><td class="k">Secrets</td><td class="a">Chart reads, never creates</td></tr>
+      <tr class="frag" data-f="5"><td class="k">Health</td><td class="a">Custom health definitions</td></tr>
+      <tr class="frag" data-f="6"><td class="k">Dashboards</td><td class="a">92 generated at build time</td></tr>
+      <tr class="frag" data-f="7"><td class="k">Routing &amp; access</td><td class="a">Ingress → Gateway API</td></tr>
+    </table>
+  </div>
+  <div class="foot"><span class="sec">Decisions</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 21 · CONVERGENCE ★ ═════════ -->
+<section class="slide" data-sec="Decisions" data-time="2:00"
+data-notes="★ THE BEST ENGINEERING-JUDGMENT STORY. Land it slowly.
+
+Set up the two installers: 'There are two ways this app gets installed. Argo CD, on clusters already running. And the bootstrap installer, which runs when a brand-new cluster is built. Both have to exist, because you can't use Argo CD to install a cluster that doesn't have Kubernetes yet. Day 0 vs. day 2.'
+
+ • CLICK 1: 'At the start: one script, no Argo.'
+ • CLICK 2: 'During the migration both existed, each building the app its own way. A reviewer pointed out I was sharing files between them, not sharing the actual artifact. Two implementations that have to match forever is a permanent tax.'
+ • CLICK 3: 'So I closed it. The bootstrap installer now installs the exact chart Argo does, and the old script was deleted.'
+
+Not on the slide; say it if there's time or if they ask about testing: 'Twelve of my tests worked by running both versions and comparing them. With no second version, those tests would only confirm whatever my code already does. So I deleted them on purpose.'">
+  <div class="eyebrow"><span class="num">7</span> Decisions</div>
+  <h2>Day 0 and day 2 <span class="lo">now ship one artifact</span></h2>
   <div class="content">
     <div class="prog">
       <div class="step s1 frag" data-f="1">
         <div class="tag">Before</div>
         <h5>Only the script</h5>
-        <p>No ArgoCD anywhere.</p>
+        <p>No Argo CD anywhere.</p>
         <div class="mark">1,364 lines</div>
       </div>
       <div class="to frag" data-f="2">→</div>
       <div class="step s2 frag" data-f="2">
         <div class="tag">During</div>
-        <h5>Two installers</h5>
-        <p>Each built the app its own way.</p>
-        <div class="mark">⚠ they can stop matching</div>
+        <h5>Two installers, two builds</h5>
+        <p>Bootstrap and Argo CD each built the app their own way.</p>
+        <div class="mark">⚠ they can silently diverge</div>
       </div>
       <div class="to frag" data-f="3">→</div>
       <div class="step s3 frag" data-f="3">
         <div class="tag">Now</div>
         <h5>Two installers, one chart</h5>
-        <p>The old script is deleted.</p>
+        <p>Bootstrap installs the same chart Argo does. Script deleted.</p>
         <div class="mark">✓ they can't disagree</div>
       </div>
     </div>
   </div>
-  <div class="foot"><span class="sec">Solution</span><span class="pg"></span></div>
+  <div class="foot"><span class="sec">Decisions</span><span class="pg"></span></div>
 </section>
 
-<!-- ═════════ 11 · DEMO (blank) ═════════ -->
-<section class="slide" data-sec="Demo" data-time="—"
-data-notes="Blank on purpose — switch away from the deck to the live demo here.">
-  <div class="eyebrow"><span class="num">4</span> Demo</div>
-  <div class="content"></div>
-  <div class="foot"><span class="sec">Demo</span><span class="pg"></span></div>
-</section>
+<!-- ═════════ 22 · PROGRESSIVE ROLLOUT ═════════ -->
+<section class="slide" data-sec="Rollout" data-time="2:00"
+data-notes="'Two environments before prod catch most problems, but prod is hundreds of clusters, so it shouldn't flip all at once.'
 
-<!-- ═════════ 12 · RESULTS — DECISIONS ═════════ -->
-<section class="slide" data-sec="Results" data-time="1:30"
-data-notes="Frame it: 'The migration didn't just move one app. It settled decisions that every app after it would otherwise have to make independently — and I had a strong voice in each of these.'
+TOP: 'Dev clusters are test-heavy. Staging is production-like. Prod rolls out in waves using ApplicationSet progressive sync with the RollingSync strategy: a small canary set of clusters first, then a larger percentage, then everything. Each wave waits until its apps are Healthy before the next starts.'
 
-One sentence each:
- • ROLLOUT — 'One generator, per-cluster config in git, and a cluster opts in by naming a version in its own file. Adding a cluster is a pull request.'
- • CHART BUILD — 'We wrap the upstream chart at a pinned version and fold our own content in as part of it. That makes the upstream version explicit and reviewable, instead of being whatever the script last downloaded.'
- • TOPOLOGY — 'One shared hub, with the workload clusters attached to it — rather than every management cluster running its own separate copy. That centralises what's deployed where. And it was proven safe: about 258 running objects were taken over without touching them.'
- • SHIPPING — 'Built from the monorepo and published to our internal registry, with the development registry wired up and production deliberately not, so nothing can accidentally publish to production.'
+CLICK, scoped: 'What RollingSync doesn't do is roll back on its own. So at the end of the summer I scoped the next layer: if a wave stays unhealthy past a timeout, revert every cluster in it to the previous version. Kargo for promotion between environments, and Argo Rollouts for in-cluster canaries. We scoped these but didn't build them before I left.'
 
-Then the counterfactual, deliberately: 'Had we started with an easy app, most of these would still be open — and they'd get discovered one at a time, slowly, by whoever hit them first.'
+CLICK: 'Plus hooks: some apps needed pre- and post-sync logic to mirror decisions the scripts used to make at runtime.'
 
-Then the reach beyond the team: 'These weren't just internal notes — they gave me a shared vocabulary to actually discuss ideas with other teams, like Cloud Platform and the Inference Service Platform team.'">
-  <div class="eyebrow"><span class="num">5</span> Results</div>
-  <h2>Patterns that have been <span class="lo">Surfaced</span></h2>
+[NEIL: confirm which parts were actually running versus scoped.]">
+  <div class="eyebrow"><span class="num">8</span> Rollout</div>
+  <h2>Shipping to hundreds of clusters <span class="lo">safely</span></h2>
   <div class="content">
-    <div class="pgrid frag" data-f="1">
+    <div class="flow" style="grid-template-columns:repeat(5,1fr)">
+      <div class="fstep frag" data-f="1"><div class="fn">Dev</div><b>Test-heavy clusters</b><p>Break things here.</p></div>
+      <div class="fstep frag" data-f="1"><div class="fn">Stage</div><b>Production-like</b><p>Same shape as prod.</p></div>
+      <div class="fstep ac frag" data-f="1"><div class="fn">Prod · wave 1</div><b>Canary clusters</b><p>Wait for Healthy.</p></div>
+      <div class="fstep ac frag" data-f="1"><div class="fn">Prod · wave 2</div><b>Larger %</b><p>Wait for Healthy.</p></div>
+      <div class="fstep gd frag" data-f="1"><div class="fn">Prod · wave 3</div><b>Entire fleet</b><p>RollingSync done.</p></div>
+    </div>
+    <div class="cols c2">
+      <div class="panel warm frag" data-f="2"><h4>Scoped next: rollback</h4><div class="p">Wave unhealthy past a timeout → <b>revert all</b> to the previous version. Kargo + Argo Rollouts.</div></div>
+      <div class="panel cool frag" data-f="3"><h4>Hooks for runtime logic</h4><div class="p">Pre/post-sync Jobs reproduce decisions the scripts <b>made at runtime</b>.</div></div>
+    </div>
+  </div>
+  <div class="foot"><span class="sec">Rollout</span><span class="pg"></span></div>
+</section>
+
+<!-- ═════════ 23 · RESULTS ═════════ -->
+<section class="slide" data-sec="Results" data-time="1:30"
+data-notes="Frame: 'The migration didn't just move one app. It settled decisions every app after it would otherwise make on its own.'
+
+TILES: 'In final-week validation of the declaratively deployed stack, cluster-health queries never went down for more than five minutes. Time to acknowledge observability-stack issues improved more than 2x. The 1,364-line script is deleted. And about 258 live objects were adopted with no recreation.'
+
+PATTERNS: 'These eight patterns are written down. The rest of the foundation (Ceph, Cilium, cert-manager, Kyverno, and the others) migrates by following them instead of researching from scratch.'
+
+'It also gave me a shared vocabulary with other teams. The deployment design informed the services the Inference Service Platform team built on.'">
+  <div class="eyebrow"><span class="num">8</span> Results</div>
+  <h2>What changed</h2>
+  <div class="content">
+    <div class="stats c4 frag" data-f="1">
+      <div class="tile good"><div class="n">0</div><div class="l">outages &gt;5 min in final-week validation</div></div>
+      <div class="tile good"><div class="n">&gt;2×</div><div class="l">faster time-to-acknowledge</div></div>
+      <div class="tile good"><div class="n">1,364 → 0</div><div class="l">lines of install script</div></div>
+      <div class="tile good"><div class="n">~258</div><div class="l">live objects adopted in place</div></div>
+    </div>
+    <div class="pgrid frag" data-f="2">
       <div class="pbox hd">Chart Build</div>
-      <div class="pbox hd">Establishing Prerequisites</div>
+      <div class="pbox hd">Prerequisites</div>
       <div class="pbox hd">PreSync Hooks</div>
       <div class="pbox hd">PostSync Checks</div>
       <div class="pbox hd">Defining Health</div>
-      <div class="pbox hd">Reusing / Abstraction</div>
+      <div class="pbox hd">Reuse / Abstraction</div>
       <div class="pbox hd">Secret Consumption</div>
-      <div class="pbox hd">ArgoCD Architecture</div>
+      <div class="pbox hd">Argo CD Topology</div>
     </div>
-    <div class="panel warm frag" data-f="2">
-      <h4>Had we started with an easy app</h4>
-      <div class="p">Most of these would still be open — found one at a time, slowly, by whoever hit them first.</div>
-    </div>
-    <div class="panel accent frag" data-f="3">
-      <h4>A shared vocabulary for other teams</h4>
-      <div class="p">Enough to discuss ideas with <b>Cloud Platform</b> and the <b>Inference Service Platform</b> team.</div>
-    </div>
+    <div class="rule frag" data-f="3">The other ~44 apps follow <em>a written pattern</em>, not research.</div>
   </div>
   <div class="foot"><span class="sec">Results</span><span class="pg"></span></div>
 </section>
 
+<!-- ═════════ 24 · WHY INFERACT ★ ═════════ -->
+<section class="slide" data-sec="Why Inferact" data-time="2:00"
+data-notes="★ THE BRIDGE. Be specific but humble. You're describing where your skills apply, not telling them how their systems work.
 
-<!-- ═════════ 13 · LESSONS — STARTED FROM ZERO ═════════ -->
-<section class="slide" data-sec="Learnings" data-time="1:20"
-data-notes="Zero experience with any of these three on day one. Then land what the app actually was: an observability stack — prometheus, grafana, alertmanager, and everything wired between them — arguably the most technically challenging and important deployment in the tree.">
-  <div class="eyebrow"><span class="num">6</span> Learnings</div>
-  <h2>I started having never <span class="lo">touched Kubernetes</span></h2>
+Open: 'Inferact's goal is running vLLM well on more kinds of hardware, in more places. That multiplies the problem I worked on: every new accelerator, every customer cluster, every vLLM release has to land correctly and be observable.'
+
+ • FLEET GITOPS: 'Model, vLLM version, and engine flags per cluster become reviewed values on one artifact.'
+ • AGENTS: 'Enterprise clusters often allow outbound connections only. The agent model fits that exactly.'
+ • OBSERVABILITY: 'vLLM already exports Prometheus metrics: time-to-first-token histograms, KV-cache usage, running and waiting requests. That's exactly the input for fleet-wide SLOs and alerts.'
+ • AIR-GAP: 'Pinned, mirrored artifacts for on-prem customers.'
+ • PROMOTION: 'dev → stage → prod in waves, gated on health. For vLLM, gate it on TTFT and error rate.'">
+  <div class="eyebrow"><span class="num">9</span> Why Inferact</div>
+  <h2>Same problem, <span class="lo">on every accelerator</span></h2>
   <div class="content">
-    <div class="cols c3 frag" data-f="1">
-      <div class="pbox hd">Kubernetes</div>
-      <div class="pbox hd">Helm</div>
-      <div class="pbox hd">ArgoCD</div>
-    </div>
-    <div class="big frag" data-f="2">…and arguably the most technically challenging and important deployment of all…</div>
-    <div class="panel accent frag" data-f="3">
-      <h4>An Observability Stack</h4>
-      <div class="p">prometheus, grafana, alertmanager, etc.</div>
-    </div>
+    <table class="t">
+      <tr><th style="width:34%">What I built at Cerebras</th><th>Where it applies to vLLM at scale</th></tr>
+      <tr class="frag" data-f="1"><td class="k">One chart × per-cluster config</td><td>Model, vLLM version, engine flags as <b>reviewed values</b> per cluster or customer</td></tr>
+      <tr class="frag" data-f="2"><td class="k">Pull-based Argo CD agents</td><td>Customer clusters that allow <b>outbound-only</b> connections</td></tr>
+      <tr class="frag" data-f="3"><td class="k">Prometheus · Thanos · Grafana</td><td>vLLM's <span class="mono">/metrics</span>: <span class="mono">time_to_first_token</span>, <span class="mono">kv_cache_usage_perc</span>, queue depth → fleet SLOs</td></tr>
+      <tr class="frag" data-f="4"><td class="k">Central registry + edge mirrors</td><td>Air-gapped and on-prem deployments</td></tr>
+      <tr class="frag" data-f="5"><td class="k">Env branches + waves</td><td>Canary a new vLLM release, <b>gate promotion on TTFT</b> and error rate</td></tr>
+    </table>
+    <div class="rule frag" data-f="6">The goal: new compute <em>serving tokens on day one</em>,<br>and observable from the first request.</div>
   </div>
-  <div class="foot"><span class="sec">Learnings</span><span class="pg"></span></div>
+  <div class="foot"><span class="sec">Why Inferact</span><span class="pg"></span></div>
 </section>
 
+<!-- ═════════ 25 · NEXT ═════════ -->
+<section class="slide" data-sec="Next" data-time="1:30"
+data-notes="LEFT, learned: 'I started from zero on Kubernetes. Picking the hardest case first is what makes an architecture general. And small, independently tested releases beat one big cutover.'
 
-
-<!-- ═════════ 15 · WHAT'S NEXT ═════════ -->
-<section class="slide" data-sec="What's Next" data-time="1:45"
-data-notes="Bigger-picture decisions for the apps that come after this one:
- • SECRET PROVISIONING — the chart reads credentials but never creates them, by design. Something else still has to.
- • CI AUTOMATION — building charts and copying in images without a human running make by hand.
- • RELEASE SCOPING — which clusters, which datacenters, and what format changes roll out in.
-
-Close: I'd already begun scoping some of this out during the internship — cluster rings/ Argo Rollouts — to help the team plan ahead.">
-  <div class="eyebrow"><span class="num">7</span> What's next</div>
-  <h2>What's left</h2>
+RIGHT, what I'd build next (these were open when I left):
+ • CI: 'Build, tag, and push images and charts to Artifactory without a human.'
+ • AGENTIC PROMOTION: 'An automated CI agent that bumps each environment's targetRevision as a release passes dev, then stage, then prod, opening the PRs and attaching the health evidence. A human still approves prod.'
+ • RENOVATE: 'Turn the groundwork on, so upstream updates arrive as PRs.'
+ • AUTO-ROLLBACK: 'Kargo plus wave timeouts.'
+ • SECRETS: 'Provisioning for the credentials the chart only reads.'">
+  <div class="eyebrow"><span class="num">9</span> Next</div>
+  <h2>What I learned, <span class="lo">what I'd build next</span></h2>
   <div class="content">
-    <div class="cols c3 frag" data-f="1">
-      <div class="panel accent">
-        <h4>CI automation</h4>
-        <div class="p">Building and publishing charts, copying in images, <b>without a human</b>.</div>
+    <div class="cols c2">
+      <div class="panel cool frag" data-f="1">
+        <h4>Learned</h4>
+        <ul class="k s">
+          <li>Zero → production Kubernetes, Helm, Argo CD in one summer</li>
+          <li>The <b>hardest case first</b> makes the architecture general</li>
+          <li>Small releases, each tested on a <b>real cluster</b></li>
+        </ul>
       </div>
-      <div class="panel accent">
-        <h4>Release scoping</h4>
-        <div class="p">Which clusters, which datacenters, <b>what format</b>.</div>
+      <div class="panel accent frag" data-f="2">
+        <h4>Next</h4>
+        <ul class="k s">
+          <li><b>CI</b>: build, tag, push to Artifactory, no human</li>
+          <li><b>Agentic promotion</b>: bump <span class="mono">targetRevision</span> dev → stage → prod with health evidence</li>
+          <li><b>Renovate</b> for upstream updates as PRs</li>
+          <li><b>Auto-rollback</b> with Kargo + wave timeouts</li>
+          <li><b>Secret provisioning</b></li>
+        </ul>
       </div>
-      <div class="panel accent">
-        <h4>Secret provisioning</h4>
-        <div class="p">Who creates the credentials <b>the chart only reads</b>.</div>
-      </div>
-    </div>
-    <div class="rule frag" data-f="2">The next migrations follow <em>written pattern</em>,<br>not research.</div>
-    <div class="panel warm frag" data-f="3">
-      <div class="p">Throughout the internship, I had already begun scoping these out — <b>cluster rings</b>/ <b>Argo Rollouts</b> — to help the team plan ahead.</div>
     </div>
   </div>
-  <div class="foot"><span class="sec">What's Next</span><span class="pg"></span></div>
+  <div class="foot"><span class="sec">Next</span><span class="pg"></span></div>
 </section>
 
-<!-- ═════════ 16 · CLOSING ═════════ -->
+<!-- ═════════ 26 · CLOSING ═════════ -->
 <section class="slide" data-sec="Closing" data-time="1:00"
-data-notes="Slow down. Three takeaways, then thank you.
+data-notes="Slow down. Three takeaways, then questions.
 
- 1. 'The gap wasn't a tooling problem. The old system tracked whether scripts finished; there was no description of the cluster to check against. Everything else follows from adding one.'
- 2. 'Starting with the hardest application was the leverage. prometheus hit almost every difficult case at once, so the architecture it forced is the general one — documented, and already being reused.'
- 3. 'And it ends with one implementation instead of two. ArgoCD and the bootstrap installer install the same chart, so they can't drift apart.'
+ 1. 'Scale needs a description of desired state, not more scripts.'
+ 2. 'Pull-based, environment-isolated, observable by default. That's what makes 15x tractable.'
+ 3. 'That's the work I want to do at Inferact: compute, once you finally have it, serving vLLM and observable as fast as possible.'
 
-Then thank Agam and the team by name, mention the cross-team conversations, and hand over to questions.">
-  <div class="eyebrow"><span class="num">8</span> Closing</div>
+'Thanks, happy to go deeper on any of it.'">
+  <div class="eyebrow">Closing</div>
   <h2>Takeaways</h2>
   <div class="content">
-    <div class="cols c3">
+    <div class="cols c3" style="margin-top:auto">
       <div class="panel accent frag" data-f="1">
         <h4>01</h4>
-        <div class="p">There was <b>no description of the cluster</b> to check against. Now there is.</div>
+        <div class="p">Scale needs a <b>description of desired state</b>, not more scripts.</div>
       </div>
       <div class="panel accent frag" data-f="2">
         <h4>02</h4>
-        <div class="p">The hardest app first <b>generalised</b> the architecture, making it easy for others to follow.</div>
+        <div class="p"><b>Pull-based, isolated, observable</b>: what makes 15× tractable.</div>
       </div>
       <div class="panel accent frag" data-f="3">
         <h4>03</h4>
-        <div class="p">It ends with <b>one implementation</b>, not two.</div>
+        <div class="p">I want to make new compute <b>serve vLLM on day one</b>.</div>
       </div>
     </div>
     <div class="frag" data-f="4" style="margin-top:auto;padding-top:24px;border-top:1px solid var(--surface-3);display:flex;justify-content:space-between;align-items:flex-end">
       <div>
         <div style="font-size:30px;font-weight:700;letter-spacing:-.015em">Thank you</div>
-        <div style="font-size:14.5px;color:var(--ink-2);margin-top:6px">Agam and the larger cluster software org</div>
+        <div style="font-size:14.5px;color:var(--ink-2);margin-top:6px">Neil Shastri · UIUC '27</div>
       </div>
       <div style="font-size:14.5px;color:var(--ink-2);text-align:right">Questions welcome</div>
     </div>
   </div>
   <div class="foot"><span class="sec">Closing</span><span class="pg"></span></div>
 </section>
-
 
 
 </div></div>
